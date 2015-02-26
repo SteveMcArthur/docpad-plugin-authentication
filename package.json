@@ -21,11 +21,11 @@
     "Steve McArthur <contact@stevemcarthur.co.uk> (https://github.com/SteveMcArthur)"
   ],
   "bugs": {
-    "url": "https://github.com/SteveMcArthur"
+    "url": "https://github.com/SteveMcArthur/docpad-plugin-authentication/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SteveMcArthur"
+    "url": "https://github.com/SteveMcArthur/docpad-plugin-authentication"
   },
   "engines": {
     "node": ">=0.8"
