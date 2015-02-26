@@ -1,0 +1,55 @@
+{
+  "name": "docpad-plugin-authentication",
+  "version": "2.0.0",
+  "description": "Handles authentication and login functionality via social login for your docpad application. Protects pages from unauthenticated users",
+  "homepage": "https://github.com/yourgithubusername/docpad-plugin-yourpluginname",
+  "keywords": [
+    "docpad",
+    "docpad-plugin",
+    "authentication",
+    "login",
+    "social",
+      "twitter",
+      "facebook",
+      "google"
+  ],
+  "author": "Steve McArthur <contact@stevemcarthur.co.uk> (http://www.stevemcarthur.co.uk)",
+  "maintainers": [
+    "Steve McArthur <contact@stevemcarthur.co.uk> (https://github.com/SteveMcArthur)"
+  ],
+  "contributors": [
+    "Steve McArthur <contact@stevemcarthur.co.uk> (https://github.com/SteveMcArthur)"
+  ],
+  "bugs": {
+    "url": "https://github.com/SteveMcArthur"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SteveMcArthur"
+  },
+  "engines": {
+    "node": ">=0.8"
+  },
+  "peerDependencies": {
+    "docpad": "6"
+  },
+  "dependencies": {
+    "express-session": "^1.10.3",
+    "social-login": "^0.2.8"
+  },
+  "devDependencies": {
+    "coffee-script": "~1.6.3",
+    "docpad": "6",
+    "projectz": "~0.3.13"
+  },
+  "main": "./out/authentication.plugin.js",
+  "scripts": {
+    "test": "node ./out/authentication.test.js"
+  },
+  "license": {
+    "type": "MIT"
+  },
+  "cakeConfiguration": {
+    "COFFEE_SRC_PATH": "src"
+  }
+}

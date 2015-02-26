@@ -1,0 +1,26 @@
+--- 
+layout: base 
+dynamic: true 
+title: Login Page 
+---
+
+
+<% if !@req.user: %>
+    <h2>Not Logged In. Please choose a service to log in with</h2>
+    <div>
+        <a href="/auth/twitter"><img src="/images/twitter.png" width="216" height="45">
+        </a>
+    </div>
+    <div>
+        <a href="/auth/facebook"><img src="/images/facebook.png" width="216" height="45">
+        </a>
+    </div>
+    <div>
+        <a href="/auth/google"><img src="/images/google.png" width="216" height="45">
+        </a>
+    </div>
+
+<% else: %>
+<%user=@ req.user.screen_name || @req.user.username || @req.user.name%>
+    <h2>Hello <%= user %>! You are logged in</h2>
+<% end %>
