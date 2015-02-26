@@ -1,7 +1,3 @@
-# v1.3.10 December 10, 2013
-# https://github.com/bevry/base
-
-# Temp Files
 **/*.log
 **/.docpad.db
 
@@ -11,11 +7,6 @@ components/
 bower_components/
 node_modules/
 out/
-
-# =====================================
-# CUSTOM MODIFICATIONS
-
-# None
 
 *.bat
 *.env
