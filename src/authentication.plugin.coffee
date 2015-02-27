@@ -61,16 +61,9 @@ module.exports = (BasePlugin) ->
                         callback: '/auth/twitter/callback'
                         success: '/'
                         fail: '/login'
-                google:
-                    settings: {}
-                    url:
-                        auth: '/auth/google'
-                        callback: '/auth/google/callback'
-                        success: '/'
-                        fail: '/auth/google/fail'
 
         #class that contains and manages all the login strategys
-        socialLoginClass = require("social-login")
+        socialLoginClass = require("./social-login")
         #need this to persist login/authentication details
         session = require('express-session')
         

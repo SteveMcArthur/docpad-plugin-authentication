@@ -128,34 +128,38 @@ docpadConfig = {
     # Should contain the plugin short names on the left, and the configuration to pass the plugin on the right
     plugins:
         authentication:
-            facebook:
-                settings:
-                    #if you use a .env file to store the clientID and clientSecret
-                    #don't wrap them in quotes as that will be counted as extra characters
-                    clientID: process.env.facebook_clientID
-                    clientSecret: process.env.facebook_clientSecret
-                    authParameters: scope: 'read_stream,manage_pages'
-                url:
-                    auth: '/auth/facebook'
-                    callback: '/auth/facebook/callback'
-                    success: '/'
-                    fail: '/login'
-            twitter:
-                settings:
-                    clientID: process.env.twitter_clientID
-                    clientSecret: process.env.twitter_clientSecret
-                url:
-                    auth: '/auth/twitter'
-                    callback: '/auth/twitter/callback'
-                    success: '/'
-                    fail: '/login'
-            google:
-                settings: {}
-                url:
-                    auth: '/auth/google'
-                    callback: '/auth/google/callback'
-                    success: '/'
-                    fail: '/auth/google/fail'
+            strategies:
+                facebook:
+                    settings:
+                        #if you use a .env file to store the clientID and clientSecret
+                        #don't wrap them in quotes as that will be counted as extra characters
+                        clientID: process.env.facebook_clientID
+                        clientSecret: process.env.facebook_clientSecret
+                        authParameters: scope: 'read_stream,manage_pages'
+                    url:
+                        auth: '/auth/facebook'
+                        callback: '/auth/facebook/callback'
+                        success: '/'
+                        fail: '/login'
+                twitter:
+                    settings:
+                        clientID: process.env.twitter_clientID
+                        clientSecret: process.env.twitter_clientSecret
+                    url:
+                        auth: '/auth/twitter'
+                        callback: '/auth/twitter/callback'
+                        success: '/'
+                        fail: '/login'
+                 google:
+                    settings:
+                        clientID: process.env.google_clientID
+                        clientSecret: process.env.google_clientSecret
+                        authParameters: scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email']
+                    url:
+                        auth: '/auth/google'
+                        callback: '/auth/google/callback'
+                        success: '/'
+                        fail: '/auth/google/fail'
 
 
     # =================================
