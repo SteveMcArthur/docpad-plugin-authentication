@@ -41,32 +41,33 @@ module.exports = (BasePlugin) ->
             store these values in an environment file (https://docpad.org/docs/config)
             and added to your .gitignore file
             ###
-            facebook:
-                settings:
-                    clientID: ""
-                    clientSecret: ""
-                    authParameters: scope: 'read_stream,manage_pages'
-                url:
-                    auth: '/auth/facebook'
-                    callback: '/auth/facebook/callback'
-                    success: '/'
-                    fail: '/login'
-            twitter:
-                settings:
-                    clientID: ""
-                    clientSecret: ""
-                url:
-                    auth: '/auth/twitter'
-                    callback: '/auth/twitter/callback'
-                    success: '/'
-                    fail: '/login'
-            google:
-                settings: {}
-                url:
-                    auth: '/auth/google'
-                    callback: '/auth/google/callback'
-                    success: '/'
-                    fail: '/auth/google/fail'
+            strategies:
+                facebook:
+                    settings:
+                        clientID: ""
+                        clientSecret: ""
+                        authParameters: scope: 'read_stream,manage_pages'
+                    url:
+                        auth: '/auth/facebook'
+                        callback: '/auth/facebook/callback'
+                        success: '/'
+                        fail: '/login'
+                twitter:
+                    settings:
+                        clientID: ""
+                        clientSecret: ""
+                    url:
+                        auth: '/auth/twitter'
+                        callback: '/auth/twitter/callback'
+                        success: '/'
+                        fail: '/login'
+                google:
+                    settings: {}
+                    url:
+                        auth: '/auth/google'
+                        callback: '/auth/google/callback'
+                        success: '/'
+                        fail: '/auth/google/fail'
 
         #class that contains and manages all the login strategys
         socialLoginClass = require("social-login")
@@ -84,7 +85,11 @@ module.exports = (BasePlugin) ->
             latestConfig = docpad.getConfig()
             siteURL = latestConfig.templateData.site.url
                      
-            server.use session(secret: 'jajabinks&%')
+            server.use session
+                secret: 'jajabinks&%',
+                saveUninitialized: true,
+                resave: true
+
             findOrCreate = @config.findOrCreate
             ensureAuthenticated = @config.ensureAuthenticated
             #this class adds most of the routes that handle
@@ -106,8 +111,7 @@ module.exports = (BasePlugin) ->
             )
             #Pass the various settings for the
             #various services to the socilaLogin class
-            socialConfig =
-                twitter: @config.twitter
+            socialConfig = @config.strategies
             socialLogin.use socialConfig
             
             #protect the configured URLs

@@ -21,6 +21,6 @@ title: Login Page
     </div>
 
 <% else: %>
-<%user=@ req.user.screen_name || @req.user.username || @req.user.name%>
+<%user=@ req.user.screen_name || @req.user.username || @req.user.name || "Your Name"%>
     <h2>Hello <%= user %>! You are logged in</h2>
 <% end %>

@@ -18,7 +18,8 @@ docpadConfig = {
             #You must set up your local development url as 127.0.0.1.
             #If you then run your application as localhost and then try and login via twitter
             #it will return you to 127.0.0.1 and NOT localhost and your session will be lost and
-            #you will get an internal error.
+            #you will get an internal error. Facebook, on the other hand will not accept 127.0.01
+            #as a URL,
             url: "http://127.0.0.1:9778"
 
             # Here are some old site urls that you would like to redirect from
@@ -28,7 +29,7 @@ docpadConfig = {
             ]
 
             # The default title of our website
-            title: "Your Website"
+            title: "My Authentication Website"
 
             # The website description (for SEO)
             description: """
@@ -129,8 +130,10 @@ docpadConfig = {
         authentication:
             facebook:
                 settings:
-                    clientID: ""
-                    clientSecret: ""
+                    #if you use a .env file to store the clientID and clientSecret
+                    #don't wrap them in quotes as that will be counted as extra characters
+                    clientID: process.env.facebook_clientID
+                    clientSecret: process.env.facebook_clientSecret
                     authParameters: scope: 'read_stream,manage_pages'
                 url:
                     auth: '/auth/facebook'
@@ -139,8 +142,6 @@ docpadConfig = {
                     fail: '/login'
             twitter:
                 settings:
-                    #if you use a .env file to store the clientID and clientSecret
-                    #don't wrap them in quotes as that will be counted as extra characters
                     clientID: process.env.twitter_clientID
                     clientSecret: process.env.twitter_clientSecret
                 url:

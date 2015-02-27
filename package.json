@@ -1,6 +1,6 @@
 {
   "name": "docpad-plugin-authentication",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "Handles authentication and login functionality via social login for your docpad application. Protects pages from unauthenticated users",
   "homepage": "https://github.com/yourgithubusername/docpad-plugin-yourpluginname",
   "keywords": [
@@ -9,9 +9,9 @@
     "authentication",
     "login",
     "social",
-      "twitter",
-      "facebook",
-      "google"
+    "twitter",
+    "facebook",
+    "google"
   ],
   "author": "Steve McArthur <contact@stevemcarthur.co.uk> (http://www.stevemcarthur.co.uk)",
   "maintainers": [
@@ -35,6 +35,9 @@
   },
   "dependencies": {
     "express-session": "^1.10.3",
+    "passport": "^0.2.1",
+    "passport-github": "^0.1.5",
+    "passport-youtube-v3": "0.0.2",
     "social-login": "^0.2.8"
   },
   "devDependencies": {
