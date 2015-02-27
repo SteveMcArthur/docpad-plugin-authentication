@@ -78,32 +78,33 @@ Example configurations for facebook, twitter and google in the [docpad configura
             store these values in an environment file (https://docpad.org/docs/config)
             and added to your .gitignore file
             ###
-            facebook:
-                settings:
-                    clientID: "YOUR_API_KEY"
-                    clientSecret: "YOUR_API_SECRET"
-                    authParameters: scope: 'read_stream,manage_pages'
-                url:
-                    auth: '/auth/facebook'
-                    callback: '/auth/facebook/callback'
-                    success: '/'
-                    fail: '/login'
-            twitter:
-                settings:
-                    clientID: "YOUR_API_KEY"
-                    clientSecret: "YOUR_API_SECRET"
-                url:
-                    auth: '/auth/twitter'
-                    callback: '/auth/twitter/callback'
-                    success: '/'
-                    fail: '/login'
-            google:
-                settings: {}
-                url:
-                    auth: '/auth/google'
-                    callback: '/auth/google/callback'
-                    success: '/'
-                    fail: '/auth/google/fail'
+            strategies:
+                facebook:
+                    settings:
+                        clientID: "YOUR_API_KEY"
+                        clientSecret: "YOUR_API_SECRET"
+                        authParameters: scope: 'read_stream,manage_pages'
+                    url:
+                        auth: '/auth/facebook'
+                        callback: '/auth/facebook/callback'
+                        success: '/'
+                        fail: '/login'
+                twitter:
+                    settings:
+                        clientID: "YOUR_API_KEY"
+                        clientSecret: "YOUR_API_SECRET"
+                    url:
+                        auth: '/auth/twitter'
+                        callback: '/auth/twitter/callback'
+                        success: '/'
+                        fail: '/login'
+                google:
+                    settings: {}
+                    url:
+                        auth: '/auth/google'
+                        callback: '/auth/google/callback'
+                        success: '/'
+                        fail: '/auth/google/fail'
 
 # ..
 ```
