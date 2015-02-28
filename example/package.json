@@ -1,6 +1,6 @@
 {
   "name": "authentication-website",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "description": "Test of the docpad-plugin-authentication package",
   "homepage": "http://login-stevehome.rhcloud.com",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "docpad": "^6.73.5",
-	"docpad-plugin-authentication": "^2.0.3",
+    "docpad-plugin-authentication": "^2.0.4",
     "docpad-plugin-cleanurls": "^2.7.0",
     "docpad-plugin-eco": "^2.1.0",
     "docpad-plugin-marked": "^2.2.0",

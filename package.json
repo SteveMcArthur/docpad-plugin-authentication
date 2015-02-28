@@ -1,6 +1,6 @@
 {
   "name": "docpad-plugin-authentication",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Handles authentication and login functionality via social login for your docpad application. Protects pages from unauthenticated users",
   "homepage": "https://github.com/yourgithubusername/docpad-plugin-yourpluginname",
   "keywords": [
@@ -36,38 +36,39 @@
   "dependencies": {
     "express-session": "^1.10.3",
     "passport": "^0.2.1",
-	"passport-amazon": "latest",
+    "passport-amazon": "latest",
     "passport-dropbox-oauth2": "latest",
     "passport-facebook": "latest",
     "passport-foursquare": "latest",
-	"passport-github": "^0.1.5",
+    "passport-github": "^0.1.5",
     "passport-google-oauth": "^0.1.5",
     "passport-imgur": "latest",
     "passport-instagram": "latest",
     "passport-linkedin": "latest",
-	"passport-local": "^1.0.0",
+    "passport-local": "^1.0.0",
     "passport-meetup": "latest",
     "passport-tumblr": "latest",
     "passport-twitter": "latest",
     "passport-wordpress": "latest",
     "passport-youtube": "latest",
-	"passport-youtube-v3": "0.0.2",
+    "passport-youtube-v3": "0.0.2",
     "toolset": "latest",
     "underscore": "latest"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",
     "docpad": "6",
-    "projectz": "~0.3.13"
+    "mocha": "^2.1.0",
+    "should": "^4.x"
   },
   "main": "./out/authentication.plugin.js",
-  "scripts": {
-    "test": "node ./out/authentication.test.js"
-  },
   "license": {
     "type": "MIT"
   },
   "cakeConfiguration": {
     "COFFEE_SRC_PATH": "src"
+  },
+  "scripts": {
+    "test": "node_modules/mocha/bin/_mocha -- --check-leaks  --timeout 60000"
   }
 }

@@ -18,8 +18,9 @@ docpadConfig = {
             #You must set up your local development url as 127.0.0.1.
             #If you then run your application as localhost and then try and login via twitter
             #it will return you to 127.0.0.1 and NOT localhost and your session will be lost and
-            #you will get an internal error. Facebook, on the other hand will not accept 127.0.01
+            #you will get an internal error. Facebook, on the other hand will not accept 127.0.0.1
             #as a URL,
+            #url: "http://login-stevehome.rhcloud.com"
             url: "http://127.0.0.1:9778"
 
             # Here are some old site urls that you would like to redirect from
@@ -116,13 +117,28 @@ docpadConfig = {
     # This allows DocPad's to use it's own calculated site URL instead, due to the falsey value
     # This allows <%- @site.url %> in our template data to work correctly, regardless what environment we are in
 
-    ###
     environments:
-        development:
-            templateData:
-                site:
-                    url: false #don't use this as it will bugger up your redirects
-    ###
+        development:  # default
+            # Always refresh from server
+            maxAge: false  # default
+            
+
+            # Listen to port 9778 on the development environment
+            #port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || 9778
+        production:
+            maxAge: false
+            # maxAge: false
+
+            hostname: process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+            # Listen to port 8082 on the development environment
+            port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || 9778
+        static:
+            maxAge: 86400000
+            # maxAge: false
+
+            hostname: process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+            # Listen to port 8082 on the development environment
+            port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || 9778
     
     # Configure Plugins
     # Should contain the plugin short names on the left, and the configuration to pass the plugin on the right
@@ -133,8 +149,8 @@ docpadConfig = {
                     settings:
                         #if you use a .env file to store the clientID and clientSecret
                         #don't wrap them in quotes as that will be counted as extra characters
-                        clientID: process.env.facebook_clientID
-                        clientSecret: process.env.facebook_clientSecret
+                        clientID: ''
+                        clientSecret: ''
                         authParameters: scope: 'read_stream,manage_pages'
                     url:
                         auth: '/auth/facebook'
@@ -143,23 +159,32 @@ docpadConfig = {
                         fail: '/login'
                 twitter:
                     settings:
-                        clientID: process.env.twitter_clientID
-                        clientSecret: process.env.twitter_clientSecret
+                        clientID: ''
+                        clientSecret: ''
                     url:
-                        auth: '/auth/twitter'
-                        callback: '/auth/twitter/callback'
+                        auth: ''
+                        callback: ''
                         success: '/'
                         fail: '/login'
-                 google:
+                google:
                     settings:
-                        clientID: process.env.google_clientID
-                        clientSecret: process.env.google_clientSecret
+                        clientID: ''
+                        clientSecret: ''
                         authParameters: scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email']
                     url:
                         auth: '/auth/google'
                         callback: '/auth/google/callback'
                         success: '/'
                         fail: '/auth/google/fail'
+                github:
+                    settings:
+                        clientID: ''
+                        clientSecret: ''
+                    url:
+                        auth: '/auth/github'
+                        callback: '/auth/github/callback'
+                        success: '/'
+                        fail: '/auth/github/fail'
 
 
     # =================================
