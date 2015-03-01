@@ -102,16 +102,25 @@ Example configurations for facebook, twitter and google in the [docpad configura
                         callback: '/auth/twitter/callback'
                         success: '/'
                         fail: '/login'
-             	google:
-                	settings:
-                    	clientID: "YOUR_CLIENT_ID"
-                    	clientSecret: "YOUR_CLIENT_SECRET"
-                    	authParameters: scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email']
-                	url:
-                    	auth: '/auth/google'
-                    	callback: '/auth/google/callback'
-                    	success: '/'
-                    	fail: '/auth/google/fail'
+                google:
+                    settings:
+                        clientID: "YOUR_CLIENT_ID"
+                        clientSecret: "YOUR_CLIENT_SECRET"
+                        authParameters: scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email']
+                    url:
+                        auth: '/auth/google'
+                        callback: '/auth/google/callback'
+                        success: '/'
+                        fail: '/auth/google/fail'
+                github:
+                    settings:
+                        clientID: "YOUR_CLIENT_ID"
+                        clientSecret: "YOUR_CLIENT_SECRET"
+                    url:
+                        auth: '/auth/github'
+                        callback: '/auth/github/callback'
+                        success: '/'
+                        fail: '/auth/github/fail'
 
 
 # ..

@@ -154,7 +154,10 @@ actions =
             return step4()  if !config.DOCPAD_SRC_PATH or !fsUtil.existsSync(DOCPAD)
             console.log('docpad generate')
             spawn(DOCPAD, ['generate'], {stdio:'inherit', cwd:APP_PATH}).on('close', safe next, step4)
-        step4 = next
+        step4 = ->
+            copyFile(pathUtil.join(config.COFFEE_SRC_PATH,'social-login.js'),pathUtil.join(config.COFFEE_OUT_PATH,'social-login.js'))
+            
+        step5 = next
 
         # Start
         step1()

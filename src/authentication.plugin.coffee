@@ -1,7 +1,7 @@
 # Export Plugin
 module.exports = (BasePlugin) ->
     # Define Plugin
-    class LoginPlugin extends BasePlugin
+    class AuthenticationPlugin extends BasePlugin
         # Plugin name
         name: 'authentication'
 
