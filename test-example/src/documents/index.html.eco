@@ -1,0 +1,24 @@
+---
+layout: base
+title: Home
+dynamic: true
+---
+
+<% if !@req.user: %>
+    <h2>Welcome! Please log in.</h2>
+    <a class="button" href="/login">Login</a>
+<% else: %>
+<%user= @req.user.screen_name || @req.user.username || @req.user.name || "Your Name"%>    
+<h2>Hello <%=user%>. Thankyou for logging in</h2>
+<% end %>
+
+
+<div style="margin-top:50px;border:1px solid grey;">
+    <h2>Recent Posts</h2>
+    <% for post in @getCollection('posts').sortArray(date: -1): %>
+    <div>
+        <h3><a href="<%= post.url %>"><%- post.title%></a></h3>
+        <%- post.description %>
+    </div>
+    <% end %>
+</div>
