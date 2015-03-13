@@ -8,7 +8,7 @@ module.exports = (BasePlugin) ->
         config:
             #list of urls that will be protected by authentication
             protectedUrls: ['/admin/*','/analytics/*']
-            
+
             ###
             lookup function to retrieve membership details after
             authentication. Probably want to replace it with
@@ -17,7 +17,7 @@ module.exports = (BasePlugin) ->
             ###
             findOrCreate: (opts,done) ->
                 done opts.profile #make sure this is called and the profile or user data is returned
-                
+
             ###
             Middleware function to ensure user is authenticated.
             This will be applied to any urls in the protectedUrls config option.
@@ -29,9 +29,9 @@ module.exports = (BasePlugin) ->
             ensureAuthenticated: (req, res, next) ->
                 if req.isAuthenticated()
                     return next();
-            
+
                 res.redirect('/login')
-                
+
             ###
             configuration parameters for the various authentication
             strategies. You will normally need to create an application
@@ -66,7 +66,25 @@ module.exports = (BasePlugin) ->
         socialLoginClass = require("./social-login")
         #need this to persist login/authentication details
         session = require('express-session')
-        
+
+        #check all strategies passed to config have values
+        #for their clientID or clientSecret. If not, remove
+        #those strtegies
+        getValidStrategies: ->
+            strategies = @config.strategies
+            for key, val of strategies
+                clientID = strategies[key].settings.clientID
+                clientSecret = strategies[key].settings.clientSecret
+                if !clientID.length > 0
+                    @docpad.log("warn",@name + " : "+key+" - clientID required")
+                    strategies[key] = undefined
+                else if !clientSecret.length > 0
+                    @docpad.log("warn",@name + " : "+key+" - clientSecret required")
+                    strategies[key] = undefined
+
+            return strategies
+
+
 
         serverExtend: (opts) ->
             # Extract the server from the options
@@ -77,7 +95,7 @@ module.exports = (BasePlugin) ->
             # and fetch our urls from it
             latestConfig = docpad.getConfig()
             siteURL = latestConfig.templateData.site.url
-                     
+
             server.use session
                 secret: 'jajabinks&%',
                 saveUninitialized: true,
@@ -103,14 +121,18 @@ module.exports = (BasePlugin) ->
                     return
             )
             #Pass the various settings for the
-            #various services to the socilaLogin class
-            socialConfig = @config.strategies
-            socialLogin.use socialConfig
-            
-            #protect the configured URLs
-            if @config.protectedUrls.length > 0
-                urls = new RegExp(@config.protectedUrls.join('|'))
-                server.get urls,ensureAuthenticated
+            #various services to the socialLogin class
 
-            # Chain
+            socialConfig = @getValidStrategies()
+            if socialConfig.length > 0
+                socialLogin.use(socialConfig)
+
+                #protect the configured URLs
+                if @config.protectedUrls.length > 0
+                    urls = new RegExp(@config.protectedUrls.join('|'))
+                    server.get urls,ensureAuthenticated
+            else
+                @docpad.log("warn",@name + ": no strategies configured. No pages protected by authentication")
+
+
             @
