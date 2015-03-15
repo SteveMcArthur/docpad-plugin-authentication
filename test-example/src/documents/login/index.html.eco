@@ -1,0 +1,72 @@
+--- 
+layout: base 
+dynamic: true 
+title: Login Page 
+---
+
+<style>
+
+	
+	.login-buttons {
+		text-align:center;	
+	}
+	.login-buttons div {
+		width: 230px;
+		height: 40px;
+		padding:0;
+		color:transparent;
+		margin: 10px auto 0 auto;
+	}
+	
+	.login-buttons div a {
+		width: 230px;
+		height: 40px;
+		background: none;
+		color:transparent;
+		padding: 1px 40px 15px 40px;
+	}
+	
+	.login-buttons .twit {
+		background: url(/images/social-med.png) -15px 50px
+	}
+	
+	.login-buttons .face {
+		background: url(/images/social-med.png) -15px -50px
+	}
+	
+	.login-buttons .goog {
+		background: url(/images/social-med.png) -15px -130px
+	}
+	
+	.login-buttons .git {
+		background: url(/images/social-med.png) -15px -90px
+	}
+</style>
+<% if !@req.user: %>
+
+	<div class="login-buttons">
+		<h2>Not Logged In. Please choose a service to log in with</h2>
+
+			<div class="twit">
+				<a href="/auth/twitter">Sign in with Twitter
+				</a>
+			</div>
+			<div class="face">
+				<a href="/auth/facebook">Sign in with Facebook
+				</a>
+			</div>
+			<div class="goog">
+				<a href="/auth/google">Sign in with Google
+				</a>
+			</div>
+			<div class="git">
+				<a href="/auth/github">Sign in with Github
+				</a>
+			</div>
+
+	</div>
+
+	<% else: %>
+		<%user=@ req.user.screen_name || @req.user.username || @req.user.name || "Your Name"%>
+			<h2>Hello <%= user %>! You are logged in</h2>
+			<% end %>

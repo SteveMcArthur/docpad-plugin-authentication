@@ -1,0 +1,4 @@
+out/
+*.env
+/node_modules/
+!/plugins/
