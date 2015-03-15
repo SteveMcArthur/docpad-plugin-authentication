@@ -86,7 +86,7 @@ docpadConfig = {
         getPreparedKeywords: ->
             # Merge the document keywords with the site keywords
             @site.keywords.concat(@document.keywords or []).join(', ')
-            
+
 
 
     # =================================
@@ -121,7 +121,7 @@ docpadConfig = {
         development:  # default
             # Always refresh from server
             maxAge: false  # default
-            
+
 
             # Listen to port 9778 on the development environment
             #port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || 9778
@@ -139,9 +139,10 @@ docpadConfig = {
             hostname: process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
             # Listen to port 8082 on the development environment
             port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || 9778
-    
+
     # Configure Plugins
     # Should contain the plugin short names on the left, and the configuration to pass the plugin on the right
+    ###
     plugins:
         authentication:
             strategies:
@@ -186,7 +187,7 @@ docpadConfig = {
                         success: '/'
                         fail: '/auth/github/fail'
 
-
+    ###
     # =================================
     # DocPad Events
 

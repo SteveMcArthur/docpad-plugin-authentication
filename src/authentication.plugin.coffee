@@ -12,11 +12,42 @@ module.exports = (BasePlugin) ->
             ###
             lookup function to retrieve membership details after
             authentication. Probably want to replace it with
-            your own method that will look up a memebership by
+            your own method that will look up a membership by
             some method (json file, db?)
             ###
             findOrCreate: (opts,done) ->
                 done opts.profile #make sure this is called and the profile or user data is returned
+
+            ###
+            configuration parameters for the various authentication
+            strategies. You will normally need to create an application
+            via the various services developer consoles to get a the
+            appropriate clientIDs and clientSecrets (sometimes called things
+            like consumer key/secrets or API key/secrets). Recommended that you
+            store these values in an environment file (https://docpad.org/docs/config)
+            and added to your .gitignore file
+
+            strategies:
+                facebook:
+                    settings:
+                        clientID: "YOUR_API_ID"
+                        clientSecret: "YOUR_API_SECRET"
+                        authParameters: scope: 'read_stream,manage_pages'
+                    url:
+                        auth: '/auth/facebook'
+                        callback: '/auth/facebook/callback'
+                        success: '/'
+                        fail: '/login'
+                twitter:
+                    settings:
+                        clientID: "YOUR_API_ID"
+                        clientSecret: "YOUR_API_SECRET"
+                    url:
+                        auth: '/auth/twitter'
+                        callback: '/auth/twitter/callback'
+                        success: '/'
+                        fail: '/login'
+            ###
 
             ###
             Middleware function to ensure user is authenticated.
@@ -28,39 +59,8 @@ module.exports = (BasePlugin) ->
             ###
             ensureAuthenticated: (req, res, next) ->
                 if req.isAuthenticated()
-                    return next();
-
+                    return next()
                 res.redirect('/login')
-
-            ###
-            configuration parameters for the various authentication
-            strategies. You will normally need to create an application
-            via the various services developer consoles to get a the
-            appropriate clientIDs and clientSecrets (sometimes called things
-            like consumer key/secrets or API key/secrets). Recommended that you
-            store these values in an environment file (https://docpad.org/docs/config)
-            and added to your .gitignore file
-            ###
-            strategies:
-                facebook:
-                    settings:
-                        clientID: ""
-                        clientSecret: ""
-                        authParameters: scope: 'read_stream,manage_pages'
-                    url:
-                        auth: '/auth/facebook'
-                        callback: '/auth/facebook/callback'
-                        success: '/'
-                        fail: '/login'
-                twitter:
-                    settings:
-                        clientID: ""
-                        clientSecret: ""
-                    url:
-                        auth: '/auth/twitter'
-                        callback: '/auth/twitter/callback'
-                        success: '/'
-                        fail: '/login'
 
         #class that contains and manages all the login strategys
         socialLoginClass = require("./social-login")
@@ -71,7 +71,7 @@ module.exports = (BasePlugin) ->
         #for their clientID or clientSecret. If not, remove
         #those strtegies
         getValidStrategies: ->
-            strategies = @config.strategies
+            strategies = @config.strategies or {}
             for key, val of strategies
                 clientID = strategies[key].settings.clientID
                 clientSecret = strategies[key].settings.clientSecret
@@ -82,7 +82,10 @@ module.exports = (BasePlugin) ->
                     @docpad.log("warn",@name + " : "+key+" - clientSecret required")
                     strategies[key] = undefined
 
-            return strategies
+            count = 0
+            count += 1 for key of strategies
+
+            return {strategies,count}
 
 
 
@@ -124,8 +127,8 @@ module.exports = (BasePlugin) ->
             #various services to the socialLogin class
 
             socialConfig = @getValidStrategies()
-            if socialConfig.length > 0
-                socialLogin.use(socialConfig)
+            if socialConfig.count > 0
+                socialLogin.use(socialConfig.strategies)
 
                 #protect the configured URLs
                 if @config.protectedUrls.length > 0
