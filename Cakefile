@@ -66,7 +66,6 @@ copyFile = (source, target, callback) ->
     wr.on "error", (err) ->
         done(err)
     if callback
-        console.log("HAVE CALLBACK")
         wr.on "close", () ->
             callback()
     rd.pipe(wr)
@@ -94,14 +93,14 @@ finish = (err) ->
     console.log('OK')
     
 copyToTestSite = () ->
-    console.log("COPY TO TEST SITE")
+
     TEST_SITE_PATH = "F:\\Development\\dev-current\\login\\plugins\\docpad-plugin-authentication"
     SRC_FILES = [pathUtil.join(config.COFFEE_SRC_PATH,'social-login.js'), pathUtil.join(config.COFFEE_SRC_PATH,'authentication.plugin.coffee'), pathUtil.join(config.COFFEE_SRC_PATH,'authentication.test.coffee')]
     OUT_FILES = [pathUtil.join(config.COFFEE_OUT_PATH,'social-login.js'), pathUtil.join(config.COFFEE_OUT_PATH,'authentication.plugin.js'), pathUtil.join(config.COFFEE_OUT_PATH,'authentication.test.js')]
 
     copyFile(SRC_FILES[0],pathUtil.join(TEST_SITE_PATH,'src','social-login.js'))
     copyFile(SRC_FILES[1],pathUtil.join(TEST_SITE_PATH,'src','authentication.plugin.coffee'))
-    copyFile(SRC_FILES[2],pathUtil.join(TEST_SITE_PATH,'src','authentication.plugin.coffee'))
+    copyFile(SRC_FILES[2],pathUtil.join(TEST_SITE_PATH,'src','authentication.test.coffee'))
              
     copyFile(OUT_FILES[0],pathUtil.join(TEST_SITE_PATH,'out','social-login.js'))
     copyFile(OUT_FILES[1],pathUtil.join(TEST_SITE_PATH,'out','authentication.plugin.js'))

@@ -16,7 +16,9 @@ var socialLoginClass = function(options) {
 	this.onAuth 	= options.onAuth 	|| function() {};
 	this.url		= options.url		|| 'http://127.0.0.1';
 	this.logout		= options.logout	|| {url: '/logout', after:	'/'};
-    this.context    = options.context   || {};
+    this.context    = options.context   || {};    
+    this.log        = this.context.log  || console.log;
+
 	
 	
 	// Special Cases
@@ -161,7 +163,7 @@ socialLoginClass.prototype.init = function() {
 }
 socialLoginClass.prototype.setup = function(type, settings) {
 	//toolset.log("Setting up:", type);
-	console.log("Setting up:", type);
+	this.log("info","Authentication: Setting up "+ type);
 	var scope = this;
 	if (!this.map[type]) {
 		toolset.error("Error!",'type "'+type+'" is not supported.');

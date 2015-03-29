@@ -6,7 +6,7 @@ module.exports = (BasePlugin) ->
         name: 'authentication'
 
         config:
-            sessionSecret: (new Date().getTime())
+            sessionSecret: 'k%AjPwe9%l;wiYMQd££'+(new Date()).getMilliseconds()
             #list of urls that will be protected by authentication
             protectedUrls: ['/admin/*','/analytics/*']
 
@@ -101,7 +101,7 @@ module.exports = (BasePlugin) ->
             siteURL = latestConfig.templateData.site.url
 
             server.use session
-                secret: 'jajabinks&%',
+                secret: @config.sessionSecret,
                 saveUninitialized: true,
                 resave: true
 
@@ -112,7 +112,7 @@ module.exports = (BasePlugin) ->
             socialLogin = new socialLoginClass(
                 app: server
                 url: siteURL
-                context: docpad
+                context: docpad                
                 onAuth: (req, type, uniqueProperty, accessToken, refreshToken, profile, done, docpad) ->
   
                     findOrCreate {
