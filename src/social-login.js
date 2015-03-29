@@ -16,6 +16,7 @@ var socialLoginClass = function(options) {
 	this.onAuth 	= options.onAuth 	|| function() {};
 	this.url		= options.url		|| 'http://127.0.0.1';
 	this.logout		= options.logout	|| {url: '/logout', after:	'/'};
+    this.context    = options.context   || {};
 	
 	
 	// Special Cases
@@ -211,7 +212,7 @@ socialLoginClass.prototype.setup = function(type, settings) {
 	// Execute the passport strategy
 	//passport.use(new (this.map[type])(passportSetup, settings.methods.auth));
 	passport.use(new (theStrategy)(passportSetup, function (req, accessToken, refreshToken, profile, done) {
-		scope.onAuth(req, type, scope.uniqueIds[type], accessToken, refreshToken, scope.returnRaw?profile:scope.preparseProfileData(type, profile), done);
+		scope.onAuth(req, type, scope.uniqueIds[type], accessToken, refreshToken, scope.returnRaw?profile:scope.preparseProfileData(type, profile), done, scope.context);
 	}));
 	
 	var strategyName = type;
