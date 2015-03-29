@@ -6,6 +6,7 @@ module.exports = (BasePlugin) ->
         name: 'authentication'
 
         config:
+            sessionSecret: (new Date().getTime())
             #list of urls that will be protected by authentication
             protectedUrls: ['/admin/*','/analytics/*']
 
