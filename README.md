@@ -2,7 +2,7 @@
 
 Handles authentication and login functionality via social login for your docpad application. Protects pages from unauthenticated users. Uses the node module [social-login](https://github.com/26medias/social-login) to standardise the configuration interface to the various login strategies and handle routing and redirection.
 
-**Note:** Please ensure you install the latest version as a number of bug fixes were implemented in v2.0.4
+**Note:** Please ensure you install the latest version as a number of bug fixes were implemented in v2.0.7
 
 ## Support ##
 The following services are supported:
@@ -49,7 +49,7 @@ Example configurations for facebook, twitter and google in the [docpad configura
         authentication:
             #list of urls that will be protected by authentication
             protectedUrls: ['/admin/*','/analytics/*']
-            
+
             ###
             lookup function to retrieve membership details after
             authentication. Probably want to replace it with
@@ -58,7 +58,7 @@ Example configurations for facebook, twitter and google in the [docpad configura
             ###
             findOrCreate: (opts,done) ->
                 done opts.profile #make sure this is called and the profile or user data is returned
-                
+
             ###
             Middleware function to ensure user is authenticated.
             This will be applied to any urls in the protectedUrls config option.
@@ -70,9 +70,9 @@ Example configurations for facebook, twitter and google in the [docpad configura
             ensureAuthenticated: (req, res, next) ->
                 if req.isAuthenticated()
                     return next();
-            
+
                 res.redirect('/login')
-            
+
             ###
             configuration parameters for the various authentication
             strategies. You will normally need to create an application
@@ -134,6 +134,11 @@ Much of the correct functioning of this plugin depends on the correct configurat
 **Don't test in development mode with dynamic pages**
 
 To write out any information, such as username, that is returned from the login, you will need to mark the page as dynamic (and install the [clean urls plugin](https://www.npmjs.com/package/docpad-plugin-cleanurls)). However, this seems to cause a problem when in development mode and the live reload. I don't think this is specific to this plugin, but it means you will end up in a loop of the page regenerating and reloading.
+
+**Plugin checks for configured authentication strategies**
+
+The plugin now checks the configured authentication strategies all have a clientID and clientSecret. If not, these strategies are removed and a warning issued through the console. If no strategies are configured, a warning will be issued that no pages will be protected by authentication.
+
 
 ## Example
 
