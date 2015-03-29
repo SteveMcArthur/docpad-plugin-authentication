@@ -87,7 +87,7 @@ module.exports = (BasePlugin) ->
 
             return {strategies,count}
 
-
+       
 
         serverExtend: (opts) ->
             # Extract the server from the options
@@ -111,23 +111,28 @@ module.exports = (BasePlugin) ->
             socialLogin = new socialLoginClass(
                 app: server
                 url: siteURL
-                onAuth: (req, type, uniqueProperty, accessToken, refreshToken, profile, done) ->
-
+                context: docpad
+                onAuth: (req, type, uniqueProperty, accessToken, refreshToken, profile, done, docpad) ->
+  
                     findOrCreate {
                         profile: profile
                         property: uniqueProperty
                         type: type
+                        docpad: docpad
                     }, (user) ->
                         done null, user
                         # Return the user and continue
                         return
                     return
             )
-            #Pass the various settings for the
-            #various services to the socialLogin class
+
 
             socialConfig = @getValidStrategies()
+            #prior to 2.0.7 docpad would fall over
+            #if no strategies were configured
             if socialConfig.count > 0
+                #Pass the various settings for the
+                #various services to the socialLogin class
                 socialLogin.use(socialConfig.strategies)
 
                 #protect the configured URLs
