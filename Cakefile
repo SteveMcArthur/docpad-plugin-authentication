@@ -40,13 +40,18 @@ config.COFFEE_OUT_PATH  = "out"
 config.DOCPAD_SRC_PATH  = null
 config.DOCPAD_OUT_PATH  = "out"
 
+console.log("1 COFFEE_SRC_PATH "+config.COFFEE_SRC_PATH)
+
 for own key,value of (PACKAGE_DATA.cakeConfiguration or {})
+    console.log(key+": "+value)
     config[key] = value
+    
+console.log("2 COFFEE_SRC_PATH "+config.COFFEE_SRC_PATH)
 
 for own key,value of config
     config[key] = pathUtil.resolve(APP_PATH, value)  if value
 
-
+console.log("3 COFFEE_SRC_PATH "+config.COFFEE_SRC_PATH)
 # =====================================
 # Generic
 

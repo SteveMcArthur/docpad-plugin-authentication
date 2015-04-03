@@ -73,6 +73,7 @@ module.exports = (BasePlugin) ->
         #those strtegies
         getValidStrategies: ->
             strategies = @config.strategies or {}
+
             for key, val of strategies
                 clientID = strategies[key].settings.clientID
                 clientSecret = strategies[key].settings.clientSecret
@@ -112,9 +113,8 @@ module.exports = (BasePlugin) ->
             socialLogin = new socialLoginClass(
                 app: server
                 url: siteURL
-                context: docpad                
+                context: docpad
                 onAuth: (req, type, uniqueProperty, accessToken, refreshToken, profile, done, docpad) ->
-  
                     findOrCreate {
                         profile: profile
                         property: uniqueProperty

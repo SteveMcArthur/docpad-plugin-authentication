@@ -41,24 +41,46 @@ npm install docpad-plugin-authentication --save
 
 ## Configure
 
-Example configurations for facebook, twitter and google in the [docpad configuration file](https://docpad.org/docs/config):
+Example configurations for facebook, twitter, google and gihub in the [docpad configuration file](https://docpad.org/docs/config):
 
 ``` coffee
 # ...
+
+ validUsers: [2044632]
+   
     plugins:
         authentication:
-            #list of urls that will be protected by authentication
+            #list of urls that will be protected by authentication 
             protectedUrls: ['/admin/*','/analytics/*']
-
+            
             ###
-            lookup function to retrieve membership details after
-            authentication. Probably want to replace it with
-            your own method that will look up membership by
-            some method (json file, db?)
+            This is a simple example of a method use to check
+            membership. All it does is check the user id returned
+            by the service is in the validUsers array in the docpad
+            config. In a real world app you would probably want to look-up
+            membership in a seperate list or database
             ###
             findOrCreate: (opts,done) ->
-                done opts.profile #make sure this is called and the profile or user data is returned
-
+                #Note: reference to docpad context passed
+                #as one of the options
+                docpad = opts.docpad
+                if docpad
+                    config = docpad.getConfig()
+                    validUsers = config.validUsers
+                    id = opts.profile.id || 0
+                    if id in validUsers
+                        opts.profile.validUser = true
+                        done opts.profile
+                    else
+                        opts.profile.validUser = false
+                        opts.profile.reason = "User not found"
+                        done opts.profile
+                else
+                    #Huston - we have a problem
+                    opts.profile.validUser = false
+                    opts.profile.reason = "User not checked - couldn't get docpad reference"
+                    done opts.profile
+                    
             ###
             Middleware function to ensure user is authenticated.
             This will be applied to any urls in the protectedUrls config option.
@@ -69,10 +91,11 @@ Example configurations for facebook, twitter and google in the [docpad configura
             ###
             ensureAuthenticated: (req, res, next) ->
                 if req.isAuthenticated()
+                if req.isAuthenticated()
                     return next();
-
-                res.redirect('/login')
-
+            
+                res.redirect('/login') 
+                
             ###
             configuration parameters for the various authentication
             strategies. You will normally need to create an application
@@ -85,8 +108,10 @@ Example configurations for facebook, twitter and google in the [docpad configura
             strategies:
                 facebook:
                     settings:
-                        clientID: "YOUR_API_KEY"
-                        clientSecret: "YOUR_API_SECRET"
+                        #if you use a .env file to store the clientID and clientSecret
+                        #don't wrap them in quotes as that will be counted as extra characters
+                        clientID: process.env.facebook_clientID
+                        clientSecret: process.env.facebook_clientSecret
                         authParameters: scope: 'read_stream,manage_pages'
                     url:
                         auth: '/auth/facebook'
@@ -95,8 +120,8 @@ Example configurations for facebook, twitter and google in the [docpad configura
                         fail: '/login'
                 twitter:
                     settings:
-                        clientID: "YOUR_API_KEY"
-                        clientSecret: "YOUR_API_SECRET"
+                        clientID:  process.env.twitter_clientID
+                        clientSecret: process.env.twitter_clientSecret
                     url:
                         auth: '/auth/twitter'
                         callback: '/auth/twitter/callback'
@@ -104,23 +129,39 @@ Example configurations for facebook, twitter and google in the [docpad configura
                         fail: '/login'
                 google:
                     settings:
-                        clientID: "YOUR_CLIENT_ID"
-                        clientSecret: "YOUR_CLIENT_SECRET"
+                        clientID: process.env.google_clientID
+                        clientSecret: process.env.google_clientSecret
                         authParameters: scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email']
                     url:
                         auth: '/auth/google'
                         callback: '/auth/google/callback'
                         success: '/'
-                        fail: '/auth/google/fail'
+                        fail: '/login'
                 github:
                     settings:
-                        clientID: "YOUR_CLIENT_ID"
-                        clientSecret: "YOUR_CLIENT_SECRET"
+                        clientID: process.env.github_clientID
+                        clientSecret: process.env.github_clientSecret
                     url:
                         auth: '/auth/github'
                         callback: '/auth/github/callback'
                         success: '/'
-                        fail: '/auth/github/fail'
+                        fail: '/login'
+                        
+    environments:
+        development:
+            templateData:
+                site:
+                    url: "http://127.0.0.1:9778"
+                    
+            plugins:
+                authentication:
+                    strategies:
+                        github:
+                            settings:
+                                #set development ids in env file
+                                clientID: process.env.github_devclientID
+                                clientSecret: process.env.github_devclientSecret
+
 
 
 # ..
@@ -131,18 +172,19 @@ Similar configuration for the other services available.
 
 Much of the correct functioning of this plugin depends on the correct configuration on the side of the various services developer consoles. In particular, pay attention to URLs. Some services do not work well with localhost/127.0.0.1. I couldn't get facebook to work on localhost. Make sure the domain of your login button is on the same domain that the service returns you to. Seems obvious, but in testing I had a login page on 127.0.0.1 and the service was returning me to localhost. You will lose your session if you do that - and it may not be obvious why.
 
-**Don't test in development mode with dynamic pages**
+**Don't test in development mode with live reload**
 
-To write out any information, such as username, that is returned from the login, you will need to mark the page as dynamic (and install the [clean urls plugin](https://www.npmjs.com/package/docpad-plugin-cleanurls)). However, this seems to cause a problem when in development mode and the live reload. I don't think this is specific to this plugin, but it means you will end up in a loop of the page regenerating and reloading.
+To write out any information, such as username, that is returned from the login, you will need to mark the page as dynamic (and install the [clean urls plugin](https://www.npmjs.com/package/docpad-plugin-cleanurls)). However, this seems to cause a problem when in development mode and the live reload. I don't think this is specific to this plugin, but it means you will end up in a loop of the page regenerating and reloading. It's best to just remove the [livereload plugin](https://www.npmjs.com/package/docpad-plugin-livereload). Delete it from the package.json file and the node_modules directory.
 
 **Plugin checks for configured authentication strategies**
 
 The plugin now checks the configured authentication strategies all have a clientID and clientSecret. If not, these strategies are removed and a warning issued through the console. If no strategies are configured, a warning will be issued that no pages will be protected by authentication.
 
 
+
 ## Example
 
-For a working example using twitter, facebook and google, refer to the [My Authentication Website](http://login-stevehome.rhcloud.com)
+For a working example using twitter, facebook, google and github, refer to the [My Authentication Website](http://login-stevehome.rhcloud.com)
 
 
 ## License
