@@ -1,6 +1,8 @@
 # The DocPad Configuration File
 # It is simply a CoffeeScript Object which is parsed by CSON
-
+fs = require('fs')
+path = require('path')
+util = require('util')
 docpadConfig = {
 
     # =================================
@@ -19,9 +21,9 @@ docpadConfig = {
             #If you then run your application as localhost and then try and login via twitter
             #it will return you to 127.0.0.1 and NOT localhost and your session will be lost and
             #you will get an internal error. Facebook, on the other hand will not accept 127.0.0.1
-            #as a URL,
-            #url: "http://login-stevehome.rhcloud.com"
-            url: "http://127.0.0.1:9778"
+            #as a URL.
+            url: "http://login-stevehome.rhcloud.com"
+
 
             # Here are some old site urls that you would like to redirect from
             oldUrls: [
@@ -86,7 +88,19 @@ docpadConfig = {
         getPreparedKeywords: ->
             # Merge the document keywords with the site keywords
             @site.keywords.concat(@document.keywords or []).join(', ')
-            
+
+        getSource: ->
+            file = path.join('plugins','docpad-plugin-authentication','src','authentication.plugin.coffee')
+            try
+                return fs.readFileSync(file,'utf-8')
+            catch err
+                file = path.join('node_modules','docpad-plugin-authentication','out','authentication.plugin.js')
+                try
+                    return fs.readFileSync(file,'utf-8')
+                catch
+                    return ''
+
+
 
 
     # =================================
@@ -121,7 +135,19 @@ docpadConfig = {
         development:  # default
             # Always refresh from server
             maxAge: false  # default
-            
+            templateData:
+                site:
+                    url: "http://127.0.0.1:9778"
+                    
+            plugins:
+                authentication:
+                    strategies:
+                        github:
+                            settings:
+                                #set development ids in env file
+                                clientID: process.env.github_devclientID
+                                clientSecret: process.env.github_devclientSecret
+
 
             # Listen to port 9778 on the development environment
             #port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || 9778
@@ -139,18 +165,48 @@ docpadConfig = {
             hostname: process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
             # Listen to port 8082 on the development environment
             port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || 9778
-    
+
     # Configure Plugins
     # Should contain the plugin short names on the left, and the configuration to pass the plugin on the right
+    
+    validUsers: [2044632]
+    #validUsers: [204463]
+   
     plugins:
         authentication:
+            findOrCreate: (opts,done) ->
+                console.log("Find or Create")
+                docpad = opts.docpad
+                console.log("Got docpad: "+docpad)
+                if docpad
+                    config = docpad.getConfig()
+                    console.log("Got config")
+                    validUsers = config.validUsers
+                    console.log("Got valid users")
+                    id = opts.profile.id || 0
+                    if id in validUsers
+                        console.log("Found user...")
+                        opts.profile.validUser = true
+                        done opts.profile
+                    else
+                        console.log("User not found...")
+                        opts.profile.validUser = false
+                        opts.profile.reason = "User not found"
+                        done opts.profile
+                else
+                    #Huston - we have a problem
+                    console.log("Not checked user...")
+                    opts.profile.validUser = false
+                    opts.profile.reason = "User not checked - couldn't get docpad reference"
+                    done opts.profile
+
             strategies:
                 facebook:
                     settings:
                         #if you use a .env file to store the clientID and clientSecret
                         #don't wrap them in quotes as that will be counted as extra characters
-                        clientID: ''
-                        clientSecret: ''
+                        clientID: process.env.facebook_clientID
+                        clientSecret: process.env.facebook_clientSecret
                         authParameters: scope: 'read_stream,manage_pages'
                     url:
                         auth: '/auth/facebook'
@@ -159,32 +215,32 @@ docpadConfig = {
                         fail: '/login'
                 twitter:
                     settings:
-                        clientID: ''
-                        clientSecret: ''
+                        clientID:  process.env.twitter_clientID
+                        clientSecret: process.env.twitter_clientSecret
                     url:
-                        auth: ''
-                        callback: ''
+                        auth: '/auth/twitter'
+                        callback: '/auth/twitter/callback'
                         success: '/'
                         fail: '/login'
                 google:
                     settings:
-                        clientID: ''
-                        clientSecret: ''
+                        clientID: process.env.google_clientID
+                        clientSecret: process.env.google_clientSecret
                         authParameters: scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email']
                     url:
                         auth: '/auth/google'
                         callback: '/auth/google/callback'
                         success: '/'
-                        fail: '/auth/google/fail'
+                        fail: '/login'
                 github:
                     settings:
-                        clientID: ''
-                        clientSecret: ''
+                        clientID: process.env.github_clientID
+                        clientSecret: process.env.github_clientSecret
                     url:
                         auth: '/auth/github'
                         callback: '/auth/github/callback'
                         success: '/'
-                        fail: '/auth/github/fail'
+                        fail: '/login'
 
 
     # =================================

@@ -3,22 +3,44 @@ layout: base
 title: Home
 dynamic: true
 ---
-
+<script type="text/javascript" src="js/shCore.js"></script>
+<script type="text/javascript" src="js/shBrushcoffee.js"></script>
+<script type="text/javascript" src="js/shBrushJScript.js"></script>
+<link type="text/css" rel="stylesheet" href="css/shCoreDefault.css">
+<script type="text/javascript">SyntaxHighlighter.all();</script>
 <% if !@req.user: %>
     <h2>Welcome! Please log in.</h2>
     <a class="button" href="/login">Login</a>
 <% else: %>
-<%user= @req.user.screen_name || @req.user.username || @req.user.name || "Your Name"%>    
+<%user= @req.user.screen_name || @req.user.username || @req.user.name || "Your Name"%>
 <h2>Hello <%=user%>. Thankyou for logging in</h2>
+<% if !@req.user.validUser: %>
+<div style="text-align:left;">
+    <h3>Not a registered user</h3> 
+    <h4>Reason: <%=@req.user.reason%></h4>
+    <p>This app looks up the user id, which is returned by the service, in an array stored in the docpad.config file. If your user id is not in this array then the validUser property is added to the returned profile and is marked as false. I also store a reason property on the profile - mainly for debugging purposes.</p>
+    <p>In a real world app you might store a list of valid users (members) either in a file on your server or in a database. You might also have a membership system so that authenticated users can register and effectively add themselves to the list of valid users. How you implement this is up to you. All you need to do is pass a method from your process to the plugin's findOrCreate property</p>
+    </div>
+<%end%>
+<div id="json-source" style="margin-top:50px;border:1px solid grey;">
+    <h2>Data Returned</h2>
+    <pre class="brush: js;">
+    <%-JSON.stringify(@req.user,null,2)%>
+    </pre>
+</div>
+<script>
+//window.onload = function(){
+// var el = document.getElementById('source');
+// el.style.display = "none";
+//}
+</script>
 <% end %>
 
 
-<div style="margin-top:50px;border:1px solid grey;">
-    <h2>Recent Posts</h2>
-    <% for post in @getCollection('posts').sortArray(date: -1): %>
-    <div>
-        <h3><a href="<%= post.url %>"><%- post.title%></a></h3>
-        <%- post.description %>
-    </div>
-    <% end %>
+<div id="source" style="margin-top:50px;border:1px solid grey;">
+    <h2>Source Code</h2>
+    <pre class="brush: coffee;">
+    <%=@getSource()%>
+    </pre>
 </div>
+

@@ -5,7 +5,7 @@
         "value" : 4
     },
     "max_line_length" : {
-        "value" : 200
+        "value" : false
     },
     "cyclomatic_complexity": {
         "level": "warn",

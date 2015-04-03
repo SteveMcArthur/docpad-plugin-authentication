@@ -6,6 +6,7 @@ module.exports = (BasePlugin) ->
         name: 'authentication'
 
         config:
+            sessionSecret: 'k%AjPwe9%l;wiYMQd££'+(new Date()).getMilliseconds()
             #list of urls that will be protected by authentication
             protectedUrls: ['/admin/*','/analytics/*']
 
@@ -72,6 +73,7 @@ module.exports = (BasePlugin) ->
         #those strtegies
         getValidStrategies: ->
             strategies = @config.strategies or {}
+
             for key, val of strategies
                 clientID = strategies[key].settings.clientID
                 clientSecret = strategies[key].settings.clientSecret
@@ -87,7 +89,7 @@ module.exports = (BasePlugin) ->
 
             return {strategies,count}
 
-
+       
 
         serverExtend: (opts) ->
             # Extract the server from the options
@@ -100,7 +102,7 @@ module.exports = (BasePlugin) ->
             siteURL = latestConfig.templateData.site.url
 
             server.use session
-                secret: 'jajabinks&%',
+                secret: @config.sessionSecret,
                 saveUninitialized: true,
                 resave: true
 
@@ -111,23 +113,27 @@ module.exports = (BasePlugin) ->
             socialLogin = new socialLoginClass(
                 app: server
                 url: siteURL
-                onAuth: (req, type, uniqueProperty, accessToken, refreshToken, profile, done) ->
-
+                context: docpad
+                onAuth: (req, type, uniqueProperty, accessToken, refreshToken, profile, done, docpad) ->
                     findOrCreate {
                         profile: profile
                         property: uniqueProperty
                         type: type
+                        docpad: docpad
                     }, (user) ->
                         done null, user
                         # Return the user and continue
                         return
                     return
             )
-            #Pass the various settings for the
-            #various services to the socialLogin class
+
 
             socialConfig = @getValidStrategies()
+            #prior to 2.0.7 docpad would fall over
+            #if no strategies were configured
             if socialConfig.count > 0
+                #Pass the various settings for the
+                #various services to the socialLogin class
                 socialLogin.use(socialConfig.strategies)
 
                 #protect the configured URLs
