@@ -91,7 +91,6 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
             ###
             ensureAuthenticated: (req, res, next) ->
                 if req.isAuthenticated()
-                if req.isAuthenticated()
                     return next();
             
                 res.redirect('/login') 

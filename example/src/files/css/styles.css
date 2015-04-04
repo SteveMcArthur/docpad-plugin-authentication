@@ -1,0 +1,162 @@
+     .button {
+         padding: 15px 50px;
+         background-color: #da4453;
+         color: white;
+         border-radius: 3px;
+         font-weight: bold;
+     }
+     
+     .top-bar {
+         background-color: #222;
+         width: 100%;
+         padding: 0 100px;
+         position: fixed;
+         height: 40px;
+         z-index: 999;
+     }
+     
+     .menu {
+         list-style-type: none;
+         margin: 0;
+         padding: 0;
+         top: 0;
+         z-index: 999;
+         height: 40px;
+         display: inline-block;
+         height: 100%;
+         color: #fff;
+     }
+     
+     .menu a {
+         text-decoration: none;
+         color: #fff;
+         font-weight: bold;
+     }
+     
+     .menu a span {
+         padding-top: 20px;
+     }
+     
+     .menu a:hover {
+         color: #fff;
+     }
+     
+     .menu a:visited {
+         color: #fff;
+     }
+     
+     .menu li {
+         height: 32px;
+         float: left;
+         padding: 8px 15px 0 15px;
+     }
+     
+     .menu li:hover {
+         background-color: grey;
+     }
+     
+     .menu li.msg {
+         padding-right: 0;
+         padding-left: 20px;
+     }
+     
+     .menu li.msg:hover {
+         background-color: transparent;
+     }
+     
+     header {
+         font-size: 40px;
+         font-style: sans-serif;
+         font-weight: bold;
+         text-decoration: none;
+     }
+     
+     header a {
+         text-decoration: none;
+         color: #222;
+     }
+     
+     .explanation {
+         margin-left: auto;
+         margin-right: auto;
+         color: #222;
+         top: 50px;
+         position: relative;
+         width: 735px;
+     }
+     
+     .hide {
+         display: none;
+     }
+     
+     #tabs {
+         list-style-type: none;
+         margin: 30px 0 0 0;
+         padding: 0 0 0.3em 0;
+     }
+     
+     #tabs li {
+         display: inline;
+     }
+     
+     #tabs li a {
+         color: #42454a;
+         background-color: #dedbde;
+         border: 1px solid #c9c3ba;
+         border-bottom: none;
+         padding: 0.3em;
+         text-decoration: none;
+     }
+     
+     #tabs li a:hover {
+         background-color: #f1f0ee;
+     }
+     
+     #tabs li a.selected {
+         color: #000;
+         background-color: #f1f0ee;
+         font-weight: bold;
+         padding: 0.7em 0.3em 0.38em 0.3em;
+     }
+     
+     .tabcontent {
+         border: 1px solid #c9c3ba;
+         padding: 0.5em;
+         background-color: #f1f0ee;
+     }
+     
+     .login-buttons {
+         text-align: center;
+     }
+     
+     .login-buttons div {
+         width: 230px;
+         height: 40px;
+         padding: 0;
+         color: transparent;
+         margin: 10px auto 0 auto;
+     }
+     
+     .login-buttons div a {
+         width: 230px;
+         height: 40px;
+         background: none;
+         color: transparent;
+         padding: 1px 40px 15px 40px;
+     }
+     
+     .login-buttons .twit {
+         background: url(/images/social-med.png) -15px 50px
+     }
+     
+     .login-buttons .face {
+         background: url(/images/social-med.png) -15px -50px
+     }
+     
+     .login-buttons .goog {
+         background: url(/images/social-med.png) -15px -130px
+     }
+     
+     .login-buttons .git {
+         background: url(/images/social-med.png) -15px -90px
+     }

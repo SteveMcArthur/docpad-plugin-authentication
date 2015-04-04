@@ -2,7 +2,6 @@
 # It is simply a CoffeeScript Object which is parsed by CSON
 fs = require('fs')
 path = require('path')
-util = require('util')
 docpadConfig = {
 
     # =================================
@@ -22,7 +21,7 @@ docpadConfig = {
             #it will return you to 127.0.0.1 and NOT localhost and your session will be lost and
             #you will get an internal error. Facebook, on the other hand will not accept 127.0.0.1
             #as a URL.
-            url: "http://login-stevehome.rhcloud.com"
+            url: "http://login-stevehome.rhcloud.com" #this will be overriden in our dev environment
 
 
             # Here are some old site urls that you would like to redirect from
@@ -36,32 +35,25 @@ docpadConfig = {
 
             # The website description (for SEO)
             description: """
-                When your website appears in search results in say Google, the text here will be shown underneath your website's title.
+                Docpad Authentication test website
                 """
 
             # The website keywords (for SEO) separated by commas
             keywords: """
-                place, your, website, keywoards, here, keep, them, related, to, the, content, of, your, website
+                docpad, node, authentication, plugin, passport, oauth2
                 """
 
             # The website's styles
             styles: [
                 '/vendor/normalize.css'
                 '/vendor/h5bp.css'
-                '/styles/style.css'
+                '/css/styles.css'
             ]
 
             # The website's scripts
             scripts: [
-                """
-                <!-- jQuery -->
-                <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-                <script>window.jQuery || document.write('<script src="/vendor/jquery.js"><\\/script>')</script>
-                """
-
                 '/vendor/log.js'
                 '/vendor/modernizr.js'
-                '/scripts/script.js'
             ]
 
 
@@ -89,16 +81,25 @@ docpadConfig = {
             # Merge the document keywords with the site keywords
             @site.keywords.concat(@document.keywords or []).join(', ')
 
-        getSource: ->
+        getPluginSource: ->
             file = path.join('plugins','docpad-plugin-authentication','src','authentication.plugin.coffee')
             try
                 return fs.readFileSync(file,'utf-8')
             catch err
-                file = path.join('node_modules','docpad-plugin-authentication','out','authentication.plugin.js')
+                file = path.join('source','authentication.plugin.coffee')
                 try
                     return fs.readFileSync(file,'utf-8')
                 catch
-                    return ''
+                    return "can't find authentication.plugin.coffee"
+                
+        getDocpadSource: ->
+            file = path.join('docpad.coffee')
+            try
+                return fs.readFileSync(file,'utf-8')
+            catch err
+                console.log(err)
+                return "can't find docpad.coffee"
+
 
 
 
@@ -174,28 +175,24 @@ docpadConfig = {
    
     plugins:
         authentication:
+            protectedUrls: ['/admin/*','/analytics/*','/super-secret-url/*']
             findOrCreate: (opts,done) ->
-                console.log("Find or Create")
+                #Note: reference to docpad context passed
+                #as one of the options
                 docpad = opts.docpad
-                console.log("Got docpad: "+docpad)
                 if docpad
                     config = docpad.getConfig()
-                    console.log("Got config")
                     validUsers = config.validUsers
-                    console.log("Got valid users")
                     id = opts.profile.id || 0
                     if id in validUsers
-                        console.log("Found user...")
                         opts.profile.validUser = true
                         done opts.profile
                     else
-                        console.log("User not found...")
                         opts.profile.validUser = false
                         opts.profile.reason = "User not found"
                         done opts.profile
                 else
                     #Huston - we have a problem
-                    console.log("Not checked user...")
                     opts.profile.validUser = false
                     opts.profile.reason = "User not checked - couldn't get docpad reference"
                     done opts.profile

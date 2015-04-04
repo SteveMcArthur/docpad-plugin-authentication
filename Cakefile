@@ -40,18 +40,15 @@ config.COFFEE_OUT_PATH  = "out"
 config.DOCPAD_SRC_PATH  = null
 config.DOCPAD_OUT_PATH  = "out"
 
-console.log("1 COFFEE_SRC_PATH "+config.COFFEE_SRC_PATH)
 
 for own key,value of (PACKAGE_DATA.cakeConfiguration or {})
     console.log(key+": "+value)
     config[key] = value
     
-console.log("2 COFFEE_SRC_PATH "+config.COFFEE_SRC_PATH)
 
 for own key,value of config
     config[key] = pathUtil.resolve(APP_PATH, value)  if value
 
-console.log("3 COFFEE_SRC_PATH "+config.COFFEE_SRC_PATH)
 # =====================================
 # Generic
 
@@ -98,10 +95,11 @@ finish = (err) ->
     console.log('OK')
     
 copyToTestSite = () ->
-
+    console.log("copyToTestSite")
     TEST_SITE_PATH = "F:\\Development\\dev-current\\login\\plugins\\docpad-plugin-authentication"
     SRC_FILES = [pathUtil.join(config.COFFEE_SRC_PATH,'social-login.js'), pathUtil.join(config.COFFEE_SRC_PATH,'authentication.plugin.coffee'), pathUtil.join(config.COFFEE_SRC_PATH,'authentication.test.coffee')]
     OUT_FILES = [pathUtil.join(config.COFFEE_OUT_PATH,'social-login.js'), pathUtil.join(config.COFFEE_OUT_PATH,'authentication.plugin.js'), pathUtil.join(config.COFFEE_OUT_PATH,'authentication.test.js')]
+
 
     copyFile(SRC_FILES[0],pathUtil.join(TEST_SITE_PATH,'src','social-login.js'))
     copyFile(SRC_FILES[1],pathUtil.join(TEST_SITE_PATH,'src','authentication.plugin.coffee'))
