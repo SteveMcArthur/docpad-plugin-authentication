@@ -171,6 +171,10 @@ Similar configuration for the other services available.
 
 Much of the correct functioning of this plugin depends on the correct configuration on the side of the various services developer consoles. In particular, pay attention to URLs. Some services do not work well with localhost/127.0.0.1. I couldn't get facebook to work on localhost. Make sure the domain of your login button is on the same domain that the service returns you to. Seems obvious, but in testing I had a login page on 127.0.0.1 and the service was returning me to localhost. You will lose your session if you do that - and it may not be obvious why.
 
+**How to work out if it is your setup causing problems or your configuration of a particular service**
+
+Use github to test your own application, even if you don't intend to use github as your login service. If login works with github but not another service, chances are that the problem is with the particular service that is failing. Some services are more difficult to configure correctly than others, but github seems to be the easiest. Also check the url returned by a failing service. Often there is information in the response header or query parameters returned by the service.
+
 **Don't test in development mode with live reload**
 
 To write out any information, such as username, that is returned from the login, you will need to mark the page as dynamic (and install the [clean urls plugin](https://www.npmjs.com/package/docpad-plugin-cleanurls)). However, this seems to cause a problem when in development mode and the live reload. I don't think this is specific to this plugin, but it means you will end up in a loop of the page regenerating and reloading. It's best to just remove the [livereload plugin](https://www.npmjs.com/package/docpad-plugin-livereload). Delete it from the package.json file and the node_modules directory.
