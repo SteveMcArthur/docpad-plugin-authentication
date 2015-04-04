@@ -51,7 +51,7 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
     plugins:
         authentication:
             #list of urls that will be protected by authentication 
-            protectedUrls: ['/admin/*','/analytics/*']
+            protectedUrls: ['/admin/*','/analytics/*','/super-secret-url/*']
             
             ###
             This is a simple example of a method use to check
@@ -173,7 +173,7 @@ Much of the correct functioning of this plugin depends on the correct configurat
 
 **How to work out if it is your setup causing problems or your configuration of a particular service**
 
-Use github to test your own application, even if you don't intend to use github as your login service. If login works with github but not another service, chances are that the problem is with the particular service that is failing. Some services are more difficult to configure correctly than others, but github seems to be the easiest. Also check the url returned by a failing service. Often there is information in the response header or query parameters returned by the service.
+Use github to test your own application, even if you don't intend to use github as your login service. If login works with github but not another service, chances are that the problem is with your configuration of the particular service that is failing. Some services are more difficult to configure correctly than others, but github seems to be the easiest. Also check the url returned by a failing service. Often there is information in the response header or query parameters returned by the service.
 
 **Don't test in development mode with live reload**
 
