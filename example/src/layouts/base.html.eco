@@ -33,6 +33,11 @@
   <li><a href="/admin"><span>Admin</span></a></li>
   <li><a href="/super-secret-url"><span>Super Secret URL</span></a></li>
 </ul>
+        <span style="float:right;margin-right:20%">
+<a target="_blank" href="http://www.beyondsecurity.com/vulnerability-scanner-verification/login-stevehome.rhcloud.com" >
+<img src="https://seal.beyondsecurity.com/verification-images/login-stevehome.rhcloud.com/vulnerability-scanner-1.gif" alt="Vulnerability Scanner" border="0" />
+</a>
+            </span>
 </div>
     <div class="explanation">If you try to access a protected URL when not logged in, you will be redirected to the login page</div>
 <div style="width:80%;margin:0 auto;text-align:center;padding-top:100px;">
@@ -43,10 +48,13 @@
         <h1><%- @document.title %></h1>
 		<%- @content %>
 	</article>
-	<footer></footer>
+	<footer>
+
+    </footer>
 
 	<!-- DocPad Scripts + Our Own -->
 	<%- @getBlock('scripts').add(@site.scripts).toHTML() %>
 </div>
+
 </body>
 </html>

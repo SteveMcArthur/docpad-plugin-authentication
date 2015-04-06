@@ -165,6 +165,8 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
 
 # ..
 ```
+Note: You don't need to configure a logout URL unless you want to use a URL other than '/logout'.
+
 Similar configuration for the other services available.
 
 **Please note**

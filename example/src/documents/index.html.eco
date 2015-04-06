@@ -13,8 +13,8 @@ dynamic: true
     <h2>Welcome! Please log in.</h2>
     <a class="button" href="/login">Login</a>
 <% else: %>
-    <%user= @req.user.screen_name || @req.user.username || @req.user.name || "Your Name"%>
-    <h2>Hello <%=user%>. Thankyou for logging in</h2>
+    <%name = @req.user.name || @req.user.username || @req.user.screen_name || "Your Name"%>
+    <h2>Hello <%=name%>. Thankyou for logging in</h2>
     <a class="button" href="/logout">Logout</a>
     <% if !@req.user.validUser: %>
         <div style="text-align:left;">
@@ -29,6 +29,7 @@ dynamic: true
 <ul id="tabs">
       <li><a id="plugin-source-l" href="#">Plugin Source</a></li>
       <li><a id="docpad-source-l" href="#">Docpad.coffee Source</a></li>
+        <li><a id="request-object-l" href="#">Request Object</a></li>
       <li><a class="hide" id="json-source-l" href="#">Data Returned</a></li>
     </ul>
 <div class="tabcontent hide" id="plugin-source">
@@ -39,6 +40,11 @@ dynamic: true
 <div class="tabcontent hide" id="docpad-source">
     <pre class="brush: coffee;">
     <%=@getDocpadSource()%>
+    </pre>
+</div>
+<div class="tabcontent hide" id="request-object">
+    <pre class="brush: js;">
+    <%-@getObjectJSON(@req)%>
     </pre>
 </div>
 <% if @req.user: %>

@@ -2,6 +2,7 @@
 # It is simply a CoffeeScript Object which is parsed by CSON
 fs = require('fs')
 path = require('path')
+util = require('util')
 docpadConfig = {
 
     # =================================
@@ -99,7 +100,11 @@ docpadConfig = {
             catch err
                 console.log(err)
                 return "can't find docpad.coffee"
-
+            
+        getObjectJSON: (obj) ->
+            return util.inspect(obj)
+        
+        
 
 
 
@@ -148,6 +153,10 @@ docpadConfig = {
                                 #set development ids in env file
                                 clientID: process.env.github_devclientID
                                 clientSecret: process.env.github_devclientSecret
+                        facebook:
+                            settings:
+                                clientID: process.env.facebook_devclientID
+                                clientSecret: process.env.facebook_devclientSecret
 
 
             # Listen to port 9778 on the development environment
@@ -170,8 +179,33 @@ docpadConfig = {
     # Configure Plugins
     # Should contain the plugin short names on the left, and the configuration to pass the plugin on the right
     
-    validUsers: [2044632]
-    #validUsers: [204463]
+    validUsers: []
+    
+    addUser: (opts) ->
+        console.log("addUser...")
+
+        if !@findUser(opts.profile[opts.property],opts.type)
+            @validUsers.push({
+                our_id: @validUsers.length+1,
+                service_id: opts.profile[opts.property],
+                service: opts.type,
+                name: opts.profile.name || opts.profile.username || opts.profile.screen_name,
+                email: opts.profile.email,
+                adminUser: false,
+                linked_ids: []
+                })
+            jsonString = JSON.stringify(@validUsers)
+            file = path.join('membership','membership.json')
+            fs.writeFileSync(file,jsonString,'utf-8')
+        return @findUser(opts.profile[opts.property],opts.type)
+            
+            
+    
+    findUser: (id,service) ->
+        for item in @validUsers
+            if item.service_id == id && item.service == service
+                return item
+        return false
    
     plugins:
         authentication:
@@ -183,14 +217,20 @@ docpadConfig = {
                 if docpad
                     config = docpad.getConfig()
                     validUsers = config.validUsers
-                    id = opts.profile.id || 0
-                    if id in validUsers
+                    id = opts.profile[opts.property]
+                    #check membership
+                    if config.findUser(id,opts.type)
                         opts.profile.validUser = true
                         done opts.profile
                     else
-                        opts.profile.validUser = false
-                        opts.profile.reason = "User not found"
-                        done opts.profile
+                        if config.addUser(opts)
+                            opts.profile.validUser = true
+                            done opts.profile
+                        else
+                            opts.profile.validUser = false
+                            opts.profile.reason = "User could not be added to membership list"
+                            done opts.profile
+                            
                 else
                     #Huston - we have a problem
                     opts.profile.validUser = false
@@ -247,6 +287,23 @@ docpadConfig = {
     # You can find a full listing of events on the DocPad Wiki
 
     events:
+    
+        docpadReady: (opts) ->
+            # Prepare
+           
+            docpad = @docpad
+            config = docpad.getConfig()
+            locale = @locale
+            file = path.join('membership','membership.json')
+            jsonString = "[]"
+            try
+                jsonString = fs.readFileSync(file,'utf-8')
+            catch
+                fs.writeFileSync(file,jsonString,'utf-8')
+            
+            config.validUsers = JSON.parse(jsonString)
+
+            
 
         # Server Extend
         # Used to add our own custom routes to the server before the docpad routes are added
