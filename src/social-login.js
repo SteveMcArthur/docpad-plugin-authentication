@@ -5,6 +5,7 @@ var passport = require('passport');
 /* Misc */
 var toolset = require('toolset');
 var _ = require('underscore');
+var fs = require('fs');
 
 
 
@@ -21,7 +22,6 @@ var socialLoginClass = function (options) {
     };
     this.context = options.context || {};
     this.log = this.context.log || console.log;
-
 
 
     // Special Cases
@@ -173,7 +173,12 @@ socialLoginClass.prototype.init = function () {
     };
 
     this.cache = new caching(1000 * 20); // 20sec session caching
+    fs.writeFileSync('passport.json',JSON.stringify(passport,null,2));
 
+};
+socialLoginClass.prototype.shutdown = function(){
+    
+    
 };
 socialLoginClass.prototype.setup = function (type, settings) {
     //toolset.log("Setting up:", type);

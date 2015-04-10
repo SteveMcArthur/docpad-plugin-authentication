@@ -1,6 +1,7 @@
 # Export Plugin
 module.exports = (BasePlugin) ->
     # Define Plugin
+    fs = require('fs')
     class AuthenticationPlugin extends BasePlugin
         # Plugin name
         name: 'authentication'
@@ -65,8 +66,7 @@ module.exports = (BasePlugin) ->
 
         #class that contains and manages all the login strategys
         socialLoginClass = require("./social-login")
-        #need this to persist login/authentication details
-        session = require('express-session')
+
 
         #check all strategies passed to config have values
         #for their clientID or clientSecret. If not, remove
@@ -89,8 +89,6 @@ module.exports = (BasePlugin) ->
 
             return {strategies,count}
 
-       
-
         serverExtend: (opts) ->
             # Extract the server from the options
             {server} = opts
@@ -99,7 +97,10 @@ module.exports = (BasePlugin) ->
             # ensure we are using the latest copy of the docpad configuraiton
             # and fetch our urls from it
             latestConfig = docpad.getConfig()
-            siteURL = latestConfig.templateData.site.url
+            site = latestConfig.templateData.site
+            siteURL = if site then site.url else '127.0.0.1'
+            #need this to persist login/authentication details
+            session = require('express-session')
 
             server.use session
                 secret: @config.sessionSecret,
@@ -110,7 +111,7 @@ module.exports = (BasePlugin) ->
             ensureAuthenticated = @config.ensureAuthenticated
             #this class adds most of the routes that handle
             #the login and redirection process
-            socialLogin = new socialLoginClass(
+            @socialLogin = new socialLoginClass(
                 app: server
                 url: siteURL
                 context: docpad
@@ -134,7 +135,7 @@ module.exports = (BasePlugin) ->
             if socialConfig.count > 0
                 #Pass the various settings for the
                 #various services to the socialLogin class
-                socialLogin.use(socialConfig.strategies)
+                @socialLogin.use(socialConfig.strategies)
 
                 #protect the configured URLs
                 if @config.protectedUrls.length > 0
@@ -142,6 +143,4 @@ module.exports = (BasePlugin) ->
                     server.get urls,ensureAuthenticated
             else
                 @docpad.log("warn",@name + ": no strategies configured. No pages protected by authentication")
-
-
             @
