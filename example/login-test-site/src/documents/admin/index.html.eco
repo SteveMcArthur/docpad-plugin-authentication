@@ -1,0 +1,21 @@
+---
+layout: base
+title: Admin Page
+dynamic: true
+---
+
+
+<% if !@req.user.adminUser: %>
+ <h2>Not an admin user.</h2>
+<p>You are not an admin user so you can't see all the secret stuff that admin users see</p>
+<div style="height:40px">
+ <a class="button" href="/makeAdmin">Make me an Admin User</a>
+</div>
+<div>
+<img alt="Top Secret" src="/images/secret-hiding-places.jpg">
+</div>
+<%else:%>
+<h2>You are an admin user so you can see secret stuff like this:</h2>
+<img alt="Top Secret" src="/images/TopSecret.jpg">
+
+<%end%>

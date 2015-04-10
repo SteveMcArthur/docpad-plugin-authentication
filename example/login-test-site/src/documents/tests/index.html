@@ -1,0 +1,35 @@
+---
+layout: base
+title: Tests
+---
+
+    <h2>These should all redirect to login when user is not authenticated</h2>
+<div id="tests" style="text-align:left;width:500px;margin-left:auto;margin-right:auto;">
+
+<h3>Base Tests</h3>
+<ul>
+<li><a href="/analytics">/analytics</a></li>
+<li><a href="/admin">/admin</a></li>
+<li><a href="/super-secret-url">/super-secret-url</a></li>
+<li><a href="/admin/edit">/admin/edit</a></li>
+<li><a href="/super-secret-url/more-secrets">/super-secret-url/more-secrets</a></li>
+</ul>
+
+<h3>URL ends with slash</h3>
+<ul>
+<li><a href="/analytics/">/analytics/</a></li>
+<li><a href="/admin/">/admin/</a></li>
+<li><a href="/super-secret-url/">/super-secret-url/</a></li>
+<li><a href="/admin/edit/">/admin/edit/</a></li>
+<li><a href="/super-secret-url/more-secrets/">/super-secret-url/more-secrets/</a></li>
+</ul>
+
+<h3>URL ends with index.html</h3>
+<ul>
+<li><a href="/analytics/index.html">/analytics/index.html</a></li>
+<li><a href="/admin/index.html">/admin/index.html</a></li>
+<li><a href="/super-secret-url/index.html">/super-secret-url/index.html</a></li>
+<li><a href="/admin/edit/index.html">/admin/edit/index.html</a></li>
+<li><a href="/super-secret-url/more-secrets/index.html">/super-secret-url/more-secrets/index.html</a></li>
+</ul>
+    </div>

@@ -1,0 +1,45 @@
+{
+  "name": "simple-authentication-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Test of the docpad-plugin-authentication package",
+  "homepage": "",
+  "keywords": [
+    "docpad",
+    "website",
+    "authentication",
+    "docpad-plugin"
+  ],
+  "author": {
+    "name": "Steve McArthur",
+    "email": "contact@stevemcarthur.co.uk",
+    "url": "http://www.stevemcarthur.co.uk"
+  },
+  "maintainers": [
+    {
+      "name": "Steve McArthur",
+      "email": "contact@stevemcarthur.co.uk",
+      "url": "https://github.com/SteveMcArthur"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Steve McArthur",
+      "email": "contact@stevemcarthur.co.uk",
+      "url": "https://github.com/SteveMcArthur"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": "0.10",
+    "npm": "2.4.1"
+  },
+  "dependencies": {
+    "docpad": "^6.73.5",
+    "docpad-plugin-authentication": "^2.1.0"
+  },
+  "main": "node_modules/docpad/bin/docpad-server"
+}
