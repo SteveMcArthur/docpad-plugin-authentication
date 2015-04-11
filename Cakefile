@@ -75,7 +75,6 @@ safe = (next,fn) ->
     fn ?= next  # support only one argument
     return (err) ->
         # success status code
-        console.log("SAFE...")
         if err is 0
             err = null
 
@@ -157,9 +156,7 @@ actions =
             return step4()  if !config.DOCPAD_SRC_PATH or !fsUtil.existsSync(DOCPAD)
             console.log('\ndocpad generate:')
             spawn(NODE, [DOCPAD, 'generate'], {output:true, cwd:APP_PATH}).on('close', safe next, step4)
-        step4 = ->
-            console.log('STEP 4....')
-            next
+        step4 = next
 
         # Start
         step1()
@@ -197,6 +194,7 @@ actions =
             actions.compile(opts, safe next, step2)
         step2 = ->
             console.log('\nnpm test:')
+            console.log('STEP 2 Running NPM test')
             spawn(NPM, ['test'], {output:true, cwd:APP_PATH}).on('close', safe next, step3)
         step3 = ->
             console.log('STEP 3 CALLING NEXT')

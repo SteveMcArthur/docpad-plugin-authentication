@@ -136,50 +136,13 @@ socialLoginClass.prototype.init = function () {
         this.setup(type, this.settings[type]);
     }
 
+};
 
-    // Setup the cache
-    var caching = function (ttl) {
-        this.ttl = ttl;
-        this.cache = {};
-        var scope = this;
-        setInterval(function () {
-            var i;
-            var t = new Date().getTime();
-            for (i in scope.cache) {
-                if (scope.cache[i].expires < t) {
-                    delete scope.cache[i];
-                }
-            }
-        }, this.ttl / 2);
-    };
-    caching.prototype.set = function (label, value) {
-        //Gamify.log("set()", [label, value]);
-        var expires = new Date().getTime() + this.ttl;
-        this.cache[label] = {
-            data: value,
-            expires: expires
-        };
-        return expires;
-    };
-    caching.prototype.get = function (label) {
-        if (this.cache[label]) {
-            return this.cache[label].data;
-        }
-        return null;
-    };
-    caching.prototype.clear = function (label) {
-        //Gamify.log("clear",label);
-        delete this.cache[label];
-    };
+socialLoginClass.prototype.shutdown = function () {
 
-    this.cache = new caching(1000 * 20); // 20sec session caching
-    fs.writeFileSync('passport.json',JSON.stringify(passport,null,2));
 
 };
-socialLoginClass.prototype.shutdown = function(){
-    
-    
-};
+
 socialLoginClass.prototype.setup = function (type, settings) {
     //toolset.log("Setting up:", type);
     this.log("info", "Authentication: Setting up " + type);

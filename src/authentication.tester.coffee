@@ -3,6 +3,8 @@ module.exports = (testers) ->
     # PRepare
     {expect} = require('chai')
     request = require('request')
+    fs = require('fs')
+    util = require('util')
 
     # Define My Tester
     class MyTester extends testers.ServerTester
@@ -32,8 +34,18 @@ module.exports = (testers) ->
                         expect(actualStr).to.equal(expectedStr)
                         done()
                         
-                test 'plugin config should have strategies property', (done) ->
+                test 'plugin config should have strategy property', (done) ->
                     config = tester.docpad.getPlugin('authentication').getConfig()
                     expect(config).to.have.property('strategies')
                     done()
+                    
+                    
+                
+                    
+                
+                    
+                
+                    
+                    
+
 
