@@ -53,6 +53,26 @@ for own key,value of (PACKAGE_DATA.cakeConfiguration or {})
 # =====================================
 # Generic
 
+copyFile = (source, target, callback) ->
+
+    cbCalled = false
+    done = (err) ->
+        console.log(err)
+
+    rd = fsUtil.createReadStream(source)
+    rd.on "error", (err) ->
+        done(err)
+
+    wr = fsUtil.createWriteStream(target)
+    wr.on "error", (err) ->
+        done(err)
+    if callback
+        wr.on "close", () ->
+            callback()
+    rd.pipe(wr)
+
+
+
 child_process = require('child_process')
 
 spawn = (command, args, opts) ->
@@ -156,8 +176,10 @@ actions =
             return step4()  if !config.DOCPAD_SRC_PATH or !fsUtil.existsSync(DOCPAD)
             console.log('\ndocpad generate:')
             spawn(NODE, [DOCPAD, 'generate'], {output:true, cwd:APP_PATH}).on('close', safe next, step4)
-        step4 = next
-
+        step4 = ->
+            copyFile(pathUtil.join(config.COFFEE_SRC_PATH,'social-login.js'),pathUtil.join(config.COFFEE_OUT_PATH,'social-login.js'), step5)
+        step5 = next
+        
         # Start
         step1()
 
