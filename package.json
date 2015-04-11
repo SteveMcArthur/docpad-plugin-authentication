@@ -1,6 +1,6 @@
 {
   "name": "docpad-plugin-authentication",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Handles authentication and login functionality via social login for your docpad application. Protects pages from unauthenticated users",
   "homepage": "https://github.com/SteveMcArthur/docpad-plugin-authentication",
   "keywords": [
@@ -31,7 +31,7 @@
     "node": ">=0.8"
   },
   "peerDependencies": {
-    "docpad": "6"
+    "docpad": ">=6.3 <7"
   },
   "dependencies": {
     "express-session": "^1.10.3",
@@ -54,13 +54,16 @@
     "passport-youtube": "latest",
     "passport-youtube-v3": "0.0.2",
     "toolset": "latest",
-    "underscore": "latest"
+    "underscore": "latest",
+    "safefs": "~3.1.0",
+    "taskgroup": "~3.3.6"
   },
   "devDependencies": {
-    "coffee-script": "~1.6.3",
-    "docpad": "6",
-    "mocha": "^2.1.0",
-    "should": "^4.x"
+    "docpad": ">=6.3 <7",
+    "coffee-script": "^1.9.1",
+    "chai": "~1.9.0",
+    "request": "~2.33.0",
+    "projectz": "^0.5.0"
   },
   "main": "./out/authentication.plugin.js",
   "license": {
@@ -70,6 +73,6 @@
     "COFFEE_SRC_PATH": "src"
   },
   "scripts": {
-    "test": "node_modules/mocha/bin/_mocha -- --check-leaks  --timeout 60000"
+    "test": "node ./out/authentication.test.js"
   }
 }

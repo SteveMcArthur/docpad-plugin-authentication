@@ -38,7 +38,7 @@
     "npm": "2.4.1"
   },
   "dependencies": {
-    "docpad": "^6.73.5",
+    "docpad": "6.73.5",
     "docpad-plugin-authentication": "^2.1.0"
   },
   "main": "node_modules/docpad/bin/docpad-server"
