@@ -1,7 +1,7 @@
 # Export Plugin
 module.exports = (BasePlugin) ->
     # Define Plugin
-    fs = require('fs')
+
     class AuthenticationPlugin extends BasePlugin
         # Plugin name
         name: 'authentication'

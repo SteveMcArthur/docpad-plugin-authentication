@@ -5,9 +5,6 @@ var passport = require('passport');
 /* Misc */
 var toolset = require('toolset');
 var _ = require('underscore');
-var fs = require('fs');
-
-
 
 
 var socialLoginClass = function (options) {

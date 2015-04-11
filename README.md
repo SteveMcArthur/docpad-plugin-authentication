@@ -1,5 +1,9 @@
 # Authentication Plugin for [DocPad](http://docpad.org)
 
+[![Build Status](https://img.shields.io/travis/SteveMcArthur/docpad-plugin-authentication/master.svg)](https://travis-ci.org/SteveMcArthur/docpad-plugin-authentication "Check this project's build status on TravisCI")
+[![NPM version](https://img.shields.io/npm/v/docpad-plugin-authentication.svg)](https://www.npmjs.com/package/docpad-plugin-authentication "View this project on NPM")
+[![NPM downloads](https://img.shields.io/npm/dm/docpad-plugin-authentication.svg)](https://www.npmjs.com/package/docpad-plugin-authentication "View this project on NPM")
+
 Handles authentication and login functionality via social login for your docpad application. Protects pages from unauthenticated users. Uses the node module [social-login](https://github.com/26medias/social-login) to standardise the configuration interface to the various login strategies and handle routing and redirection.
 
 **Note:** Please ensure you install the latest version as a number of bug fixes were implemented in v2.0.7
