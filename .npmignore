@@ -1,5 +1,3 @@
-# v1.3.10 December 10, 2013
-# https://github.com/bevry/base
 
 # Temp Files
 **/*.log
@@ -21,6 +19,7 @@ CONTRIBUTING.md
 HISTORY.md
 **/src/
 **/test/
+*.bat
 
 # Other Package Definitions
 template.js

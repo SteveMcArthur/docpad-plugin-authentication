@@ -50,7 +50,7 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
 ``` coffee
 # ...
 
- validUsers: [2044632]
+ validUsers: [2044632,1234564,0987651]
    
     plugins:
         authentication:

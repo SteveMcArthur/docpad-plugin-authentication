@@ -13,6 +13,13 @@
     "facebook",
     "google"
   ],
+  "badges": {
+    "travis": true,
+    "npm": true,
+    "npmdownloads": true,
+    "david": true,
+    "daviddev": true
+  },
   "author": "Steve McArthur <contact@stevemcarthur.co.uk> (http://www.stevemcarthur.co.uk)",
   "maintainers": [
     "Steve McArthur <contact@stevemcarthur.co.uk> (https://github.com/SteveMcArthur)"
