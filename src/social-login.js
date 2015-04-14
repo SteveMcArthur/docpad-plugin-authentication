@@ -135,11 +135,6 @@ socialLoginClass.prototype.init = function () {
 
 };
 
-socialLoginClass.prototype.shutdown = function () {
-
-
-};
-
 socialLoginClass.prototype.setup = function (type, settings) {
     //toolset.log("Setting up:", type);
     this.log("info", "Authentication: Setting up " + type);

@@ -216,10 +216,8 @@ actions =
             actions.compile(opts, safe next, step2)
         step2 = ->
             console.log('\nnpm test:')
-            console.log('STEP 2 Running NPM test')
             spawn(NPM, ['test'], {output:true, cwd:APP_PATH}).on('close', safe next, step3)
         step3 = ->
-            console.log('STEP 3 CALLING NEXT')
             next()
 
         # Start

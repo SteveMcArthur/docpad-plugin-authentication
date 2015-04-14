@@ -145,6 +145,4 @@ module.exports = (BasePlugin) ->
                 @docpad.log("warn",@name + ": no strategies configured. No pages protected by authentication")
             @
             
-        docpadDestroy: ->
-            @socialLogin.shutdown()
         
