@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/travis/SteveMcArthur/docpad-plugin-authentication/master.svg)](https://travis-ci.org/SteveMcArthur/docpad-plugin-authentication "Check this project's build status on TravisCI")
 [![NPM version](https://img.shields.io/npm/v/docpad-plugin-authentication.svg)](https://www.npmjs.com/package/docpad-plugin-authentication "View this project on NPM")
 [![NPM downloads](https://img.shields.io/npm/dm/docpad-plugin-authentication.svg)](https://www.npmjs.com/package/docpad-plugin-authentication "View this project on NPM")
+[![Gratipay donate button](<img src="//img.shields.io/gratipay/SteveMcArthur.svg">)](https://gratipay.com/SteveMcArthur/ "Donate weekly to this project using Gratipay")
 
 Handles authentication and login functionality via social login for your docpad application. Protects pages from unauthenticated users. Uses the node module [social-login](https://github.com/26medias/social-login) to standardise the configuration interface to the various login strategies and handle routing and redirection.
 
@@ -173,6 +174,9 @@ Note: You don't need to configure a logout URL unless you want to use a URL othe
 
 Similar configuration for the other services available.
 
+**No implementation of membership**
+There is no implementation of membership with this plugin. This is deliberate. So, out of the box the plugin is not a complete login solution. You need to supply your own membership system. For a simple personal blog this can be a configuration in the docpad.coffee file with a hard coded list of members, probably just yourself. For a few more members you might just store the list in a file. The next step is then to go to a database. All of these will work without the plugin locking you in to one system. Somewhere down the line I intend to create a seperate plugin that will implement a membership system using both the filesystem or a mongo db - but even without that it is straight forward to create your own system.
+
 **Please note**
 
 Much of the correct functioning of this plugin depends on the correct configuration on the side of the various services developer consoles. In particular, pay attention to URLs. Some services do not work well with localhost/127.0.0.1. I couldn't get facebook to work on localhost. Make sure the domain of your login button is on the same domain that the service returns you to. Seems obvious, but in testing I had a login page on 127.0.0.1 and the service was returning me to localhost. You will lose your session if you do that - and it may not be obvious why.
@@ -188,6 +192,9 @@ To write out any information, such as username, that is returned from the login,
 **Plugin checks for configured authentication strategies**
 
 The plugin now checks the configured authentication strategies all have a clientID and clientSecret. If not, these strategies are removed and a warning issued through the console. If no strategies are configured, a warning will be issued that no pages will be protected by authentication.
+
+**Notes on security**
+The advantage with using a third party for authentication is that you have sub-contracted security out to someone who is exerienced in that field and knows what they are doing. So don't circumvent that security. The various services usually provide a method to request various information or privaledges. Request the absolute minimum - probably just the email address. Store the absolute minimum - probably email and the services's user id. User's are generally protective of their emails - so make sure you are too. NEVER EVER implement code to store someone's password or send them their password in an email. You, as a developer, should NEVER know, or be able to lookup or see, someone's password. If a service can send you your password in an email then it is insecure - and run away fast.
 
 
 
