@@ -3,7 +3,7 @@
 [![Build Status](https://img.shields.io/travis/SteveMcArthur/docpad-plugin-authentication/master.svg)](https://travis-ci.org/SteveMcArthur/docpad-plugin-authentication "Check this project's build status on TravisCI")
 [![NPM version](https://img.shields.io/npm/v/docpad-plugin-authentication.svg)](https://www.npmjs.com/package/docpad-plugin-authentication "View this project on NPM")
 [![NPM downloads](https://img.shields.io/npm/dm/docpad-plugin-authentication.svg)](https://www.npmjs.com/package/docpad-plugin-authentication "View this project on NPM")
-[![Gratipay donate button](<img src="https://img.shields.io/gratipay/SteveMcArthur.svg">)](https://gratipay.com/SteveMcArthur/ "Donate weekly to this project using Gratipay")
+[![Gratipay donate button](https://img.shields.io/gratipay/SteveMcArthur.svg)](https://gratipay.com/SteveMcArthur/ "Donate weekly to this project using Gratipay")
 
 Handles authentication and login functionality via social login for your docpad application. Protects pages from unauthenticated users. Uses the node module [social-login](https://github.com/26medias/social-login) to standardise the configuration interface to the various login strategies and handle routing and redirection.
 
