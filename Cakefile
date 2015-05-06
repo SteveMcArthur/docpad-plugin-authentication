@@ -250,6 +250,7 @@ actions =
 
         # Start
         step1()
+        
 
     publish: (opts,next) ->
         # Prepare

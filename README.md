@@ -81,14 +81,14 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
                         opts.profile.reason = "User not found"
                         done opts.profile
                 else
-                    #Huston - we have a problem
+                    #Houston - we have a problem
                     opts.profile.validUser = false
                     opts.profile.reason = "User not checked - couldn't get docpad reference"
                     done opts.profile
                     
             ###
             Middleware function to ensure user is authenticated.
-            This will be applied to any urls in the protectedUrls config option.
+            This will be applied to any url in the protectedUrls config option.
             In this default function, if the request is authenticated (typically via a persistent login session),
             the request will proceed.  Otherwise, the user will be redirected to the
             login page. Substitute your own function (via docpad.config) that will perhaps do
@@ -175,7 +175,9 @@ Note: You don't need to configure a logout URL unless you want to use a URL othe
 Similar configuration for the other services available.
 
 **No implementation of membership**
+
 There is no implementation of membership with this plugin. This is deliberate. So, out of the box the plugin is not a complete login solution. You need to supply your own membership system. For a simple personal blog this can be a configuration in the docpad.coffee file with a hard coded list of members, probably just yourself. For a few more members you might just store the list in a file. The next step is then to go to a database. All of these will work without the plugin locking you in to one system. Somewhere down the line I intend to create a seperate plugin that will implement a membership system using both the filesystem or a mongo db - but even without that it is straight forward to create your own system.
+
 
 **Please note**
 

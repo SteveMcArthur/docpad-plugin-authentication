@@ -63,6 +63,7 @@ module.exports = (BasePlugin) ->
                 if req.isAuthenticated()
                     return next()
                 res.redirect('/login')
+                
 
         #class that contains and manages all the login strategys
         socialLoginClass = require("./social-login")
