@@ -29,8 +29,6 @@ The following services were removed as dependencies with version 2.3.0. Mainly b
 *   tumblr
 
 
-
-
 ## Install
 
 ### Install the Plugin
