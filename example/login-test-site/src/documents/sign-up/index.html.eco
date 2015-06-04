@@ -10,7 +10,7 @@ dynamic: true
     <%user = @req.user%>    
     <div id="register">
         <form id="new-user" method="post" action="/createAccount">
-        <p>You are about to create a new account on <span class="make-it-bold">Stack Overflow</span> using a login from</p>
+        <p>You are about to create a new account on <span class="make-it-bold"><%-@site.title%></span> using a login from</p>
         <div class="openid-block">
             <span class="icon-google"></span>
             <span class="openid-name"><%-user.service%> (<%-user.email%>)</span>
