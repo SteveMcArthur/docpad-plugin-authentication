@@ -307,11 +307,6 @@ To write out any information, such as username, that is returned from the login,
 
 The plugin now checks the configured authentication strategies all have a clientID and clientSecret. If not, these strategies are removed and a warning issued through the console. If no strategies are configured, a warning will be issued that no pages will be protected by authentication.
 
-**Notes on security**
-The advantage with using a third party for authentication is that you have sub-contracted security out to someone who is exerienced in that field and knows what they are doing. So don't circumvent that security. The various services usually provide a method to request various information or privaledges. Request the absolute minimum - probably just the email address. Store the absolute minimum - probably email and the services's user id. User's are generally protective of their emails - so make sure you are too. NEVER EVER implement code to store someone's password or send them their password in an email. You, as a developer, should NEVER know, or be able to lookup or see, someone's password. If a service can send you your password in an email then it is insecure - and run away fast.
-
-
-
 ## Example
 
 For a working example using twitter, facebook, google and github, refer to the [My Authentication Website](http://login-stevehome.rhcloud.com)
