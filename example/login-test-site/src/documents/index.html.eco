@@ -11,11 +11,11 @@ dynamic: true
 
 <% if !@req.user: %>
     <h2>Welcome! Please log in.</h2>
-    <a class="button" href="/login">Login</a>
+    <a id='login' class="button" href="/login">Login</a>
 <% else: %>
     <%name = @req.user.name%>
     <h2>Hello <%=name%>. Thankyou for logging in</h2>
-    <a class="button" href="/logout">Logout</a>
+    <a id='logout' class="button" href="/logout">Logout</a>
     <p>This app uses the user id and service name returned from the login service to look-up a user in the membership list. If the user is not on this list then the user is added. In the demo I've tried to implement the simplist example of a membership list using a json file on the server. This is probably fine for a small number of members, but for a large list you would probably want to implement a database like mongo</p>
 
 

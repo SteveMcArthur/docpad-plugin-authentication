@@ -17,7 +17,7 @@ The following services are supported:
 *   google
 *   github
 
-Not yet tested but should work in theory
+The following services were removed as dependencies with version 2.3.0. Mainly because there was little demand for them and so were unecessary dependencies. If those services are required, add the corresponding dependency to the package.json file.
 
 *   instagram
 *   linkedin
@@ -51,7 +51,55 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
 ``` coffee
 # ...
 
- validUsers: [2044632,1234564,0987651]
+    #-------------------------------------------------------------------------------------#
+    #Membership related code used by the findOrCreate method passed to the authentication plugin
+    writeFile: (obj,name) ->
+        fs.writeFileSync(name,util.inspect(obj),'utf-8')
+        
+    users: []
+    
+    membershipFile: path.join('membership','membership.json')
+    
+    writeMembershipFile: ->
+        jsonString = JSON.stringify(@users,null,2)
+        fs.writeFileSync(@membershipFile,jsonString,'utf-8')
+    
+    makeAdmin: (id,service) ->
+        user = @findOne(id,service)
+        user.adminUser = true
+        @writeMembershipFile()
+        return @findOne(id,service)
+    
+    findOne: (id,service) ->
+        for item in @users
+            if item.service_id == id && item.service == service
+                return item
+        return false
+    
+    saveNewUser: (user) ->
+        if user.isNew and !@findOne(user.service_id,user.service)
+            user.our_id = @users.length
+            user.isNew = false
+            @users.push(user)
+            @writeMembershipFile()
+               
+    findOrCreateUser: (opts) ->
+        user = @findOne(opts.profile[opts.property],opts.type)
+        if !user
+            user =
+                our_id: null
+                service_id: opts.profile[opts.property]
+                service: opts.type
+                name: opts.profile.name || opts.profile.username || opts.profile.screen_name
+                email: opts.profile.email
+                adminUser: false
+                linked_ids: []
+                isNew: true
+
+        return user
+    
+    #End Membership code
+    #-------------------------------------------------------------------------------------#
    
     plugins:
         authentication:
@@ -69,22 +117,15 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
                 #Note: reference to docpad context passed
                 #as one of the options
                 docpad = opts.docpad
+                
                 if docpad
                     config = docpad.getConfig()
-                    validUsers = config.validUsers
-                    id = opts.profile.id || 0
-                    if id in validUsers
-                        opts.profile.validUser = true
-                        done opts.profile
-                    else
-                        opts.profile.validUser = false
-                        opts.profile.reason = "User not found"
-                        done opts.profile
+                    #check membership
+                    user = config.findOrCreateUser(opts)
+                    done(user)
                 else
                     #Houston - we have a problem
-                    opts.profile.validUser = false
-                    opts.profile.reason = "User not checked - couldn't get docpad reference"
-                    done opts.profile
+                    done("User not checked - couldn't get docpad reference",opts.profile)
                     
             ###
             Middleware function to ensure user is authenticated.
@@ -165,6 +206,77 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
                                 #set development ids in env file
                                 clientID: process.env.github_devclientID
                                 clientSecret: process.env.github_devclientSecret
+                                
+    # =================================
+    # DocPad Events
+
+    # Here we can define handlers for events that DocPad fires
+    # You can find a full listing of events on the DocPad Wiki
+
+    events:
+    
+        docpadReady: (opts) ->
+            # Prepare
+           
+            docpad = @docpad
+            config = docpad.getConfig()
+            locale = @locale
+            jsonString = "[]"
+            try
+                jsonString = fs.readFileSync(config.membershipFile,'utf-8')
+            catch
+                fs.writeFileSync(config.membershipFile,jsonString,'utf-8')
+            
+            config.users = JSON.parse(jsonString)
+
+            
+
+        # Server Extend
+        # Used to add our own custom routes to the server before the docpad routes are added
+        serverExtend: (opts) ->
+            # Extract the server from the options
+            {server} = opts
+            docpad = @docpad
+
+            # As we are now running in an event,
+            # ensure we are using the latest copy of the docpad configuraiton
+            # and fetch our urls from it
+            latestConfig = docpad.getConfig()
+            oldUrls = latestConfig.templateData.site.oldUrls or []
+            newUrl = latestConfig.templateData.site.url
+
+            # Redirect any requests accessing one of our sites oldUrls to the new site url
+            server.use (req,res,next) ->
+
+                if req.headers.host in oldUrls
+                    res.redirect(newUrl+req.url, 301)
+                else
+                    next()
+                    
+            #url to make a user admin
+            server.get /\/makeAdmin/, (req,res,next) ->
+                user = req.user
+                user = latestConfig.makeAdmin(user.service_id,user.service)
+                req.login user, (err) ->
+                    if err
+                        next(err)
+                    res.redirect('/admin')
+                    
+                    
+            server.get '/' , (req,res,next) ->
+                if req.user and req.user.isNew
+                    res.redirect('/sign-up')
+                else
+                    next()
+                    
+            server.post '/createAccount' , (req,res,next) ->
+                name = req.body.NickName
+                if name and req.user and req.user.isNew
+                    req.user.name = name
+                    latestConfig.saveNewUser(req.user)
+                    res.redirect('/')
+                else
+                    next()
 
 
 

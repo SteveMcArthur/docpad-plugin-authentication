@@ -1,14 +1,13 @@
-/*global require, module, setInterval*/
+/*global require, module*/
 /* Passport Middleware */
 var passport = require('passport');
 
 /* Misc */
-var toolset = require('toolset');
 var _ = require('underscore');
 
 
 var socialLoginClass = function (options) {
-    var scope = this;
+
     this.returnRaw = options.returnRaw || false;
     this.app = options.app || {};
     this.onAuth = options.onAuth || function () {};
@@ -136,11 +135,11 @@ socialLoginClass.prototype.init = function () {
 };
 
 socialLoginClass.prototype.setup = function (type, settings) {
-    //toolset.log("Setting up:", type);
+
     this.log("info", "Authentication: Setting up " + type);
     var scope = this;
     if (!this.map[type]) {
-        toolset.error("Error!", 'type "' + type + '" is not supported.');
+        this.log("Error!", 'type "' + type + '" is not supported.');
         return false;
     }
 
@@ -182,7 +181,6 @@ socialLoginClass.prototype.setup = function (type, settings) {
         passportSetup = _.extend(passportSetup, this.specialCases[type].setup);
     }
 
-    //toolset.log("passportSetup", passportSetup);
     //require the appropriate passport and strategy on the fly
     var theStrategy = require(this.map[type][0])[this.map[type][1]];
     // Execute the passport strategy
@@ -200,7 +198,6 @@ socialLoginClass.prototype.setup = function (type, settings) {
     this.app.get(settings.url.auth, passport.authenticate(strategyName, settings.settings.authParameters || {}));
 
     // Setup the callback url (/auth/:service/callback)
-    //toolset.log("strategyName", strategyName);
     this.app.get(settings.url.callback, passport.authenticate(strategyName, {
         successRedirect: settings.url.success,
         failureRedirect: settings.url.fail,
@@ -211,9 +208,6 @@ socialLoginClass.prototype.setup = function (type, settings) {
 // The response is not uniform, making it harder to manage consistent data format accross all the services.
 // 
 socialLoginClass.prototype.preparseProfileData = function (type, profile) {
-
-    //toolset.log("Profile", profile);
-
 
     var data = profile._json;
 

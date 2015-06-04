@@ -1,41 +1,30 @@
---- 
+---
 layout: base 
 title: Sign Up 
 dynamic: true 
 ---
-
-
 <%if !@req.user: %>
     <h2>Welcome! Please log in.</h2>
     <a class="button" href="/login">Login</a>
 <%else:%>
-
-<div id="register" class="animate form">
-    <form action="mysuperscript.php" autocomplete="on">
-        <h1> Sign up </h1>
+    <%user = @req.user%>    
+    <div id="register">
+        <form id="new-user" method="post" action="/createAccount">
+        <p>You are about to create a new account on <span class="make-it-bold">Stack Overflow</span> using a login from</p>
+        <div class="openid-block">
+            <span class="icon-google"></span>
+            <span class="openid-name"><%-user.service%> (<%-user.email%>)</span>
+        </div>
         <p>
-            <label for="usernamesignup" class="uname" data-icon="u">Your username</label>
-            <input id="usernamesignup" name="usernamesignup" required="required" type="text" placeholder="mysuperusername690" />
+            Here's how you'll look on the site based on the information provided to us by <%-user.service%>.
         </p>
-        <p>
-            <label for="emailsignup" class="youmail" data-icon="e"> Your email</label>
-            <input id="emailsignup" name="emailsignup" required="required" type="email" placeholder="mysupermail@mail.com" />
-        </p>
-        <p>
-            <label for="passwordsignup" class="youpasswd" data-icon="p">Your password </label>
-            <input id="passwordsignup" name="passwordsignup" required="required" type="password" placeholder="eg. X8df!90EO" />
-        </p>
-        <p>
-            <label for="passwordsignup_confirm" class="youpasswd" data-icon="p">Please confirm your password </label>
-            <input id="passwordsignup_confirm" name="passwordsignup_confirm" required="required" type="password" placeholder="eg. X8df!90EO" />
-        </p>
-        <p class="signin button">
-            <input type="submit" value="Sign up" />
-        </p>
-        <p class="change_link">
-                    Already a member ?
-        <a href="#tologin" class="to_register"> Go and log in </a>
-        </p>
-    </form>
-</div>
+        <p>Click "Confirm And Create This Account" when finished.</p>
+            <div class="display-name">
+                <label for="display-name">Display Name</label>
+                <input type="text" value="<%-@req.user.name%>" maxlength="30" id="display-name" name="NickName">
+            </div>
+            <input id='confirm' type="submit" value="Create and confirm this account" class="button">
+            <a id='cancel' href="/logout">Cancel</a>
+        </form>
+        </div>
 <%end%>

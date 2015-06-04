@@ -9,4 +9,4 @@ node_modules/
 out/
 
 *.bat
-*.env
+/.env

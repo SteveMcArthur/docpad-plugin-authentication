@@ -23,6 +23,7 @@ docpadConfig = {
             #you will get an internal error. Facebook, on the other hand will not accept 127.0.0.1
             #as a URL.
             url: "http://login-stevehome.rhcloud.com" #this will be overriden in our dev environment
+            #url: "http://127.0.0.1:9778"
 
 
             # Here are some old site urls that you would like to redirect from
@@ -104,6 +105,8 @@ docpadConfig = {
         getObjectJSON: (obj) ->
             return util.inspect(obj)
         
+
+        
         
 
 
@@ -136,7 +139,8 @@ docpadConfig = {
     # The following overrides our production url in our development environment with false
     # This allows DocPad's to use it's own calculated site URL instead, due to the falsey value
     # This allows <%- @site.url %> in our template data to work correctly, regardless what environment we are in
-
+    #env: 'development'
+    
     environments:
         development:  # default
             # Always refresh from server
@@ -179,15 +183,21 @@ docpadConfig = {
     
     #-------------------------------------------------------------------------------------#
     #Membership related code used by the findOrCreate method passed to the authentication plugin
+    writeFile: (obj,name) ->
+        fs.writeFileSync(name,util.inspect(obj),'utf-8')
+        
     users: []
     
     membershipFile: path.join('membership','membership.json')
     
+    writeMembershipFile: ->
+        jsonString = JSON.stringify(@users,null,2)
+        fs.writeFileSync(@membershipFile,jsonString,'utf-8')
+    
     makeAdmin: (id,service) ->
         user = @findOne(id,service)
         user.adminUser = true
-        jsonString = JSON.stringify(@users,null,2)
-        fs.writeFileSync(@membershipFile,jsonString,'utf-8')
+        @writeMembershipFile()
         return @findOne(id,service)
     
     findOne: (id,service) ->
@@ -196,21 +206,27 @@ docpadConfig = {
                 return item
         return false
     
+    saveNewUser: (user) ->
+        if user.isNew and !@findOne(user.service_id,user.service)
+            user.our_id = @users.length
+            user.isNew = false
+            @users.push(user)
+            @writeMembershipFile()
+               
     findOrCreateUser: (opts) ->
-
-        if !@findOne(opts.profile[opts.property],opts.type)
-            @users.push({
-                our_id: @users.length+1,
-                service_id: opts.profile[opts.property],
-                service: opts.type,
-                name: opts.profile.name || opts.profile.username || opts.profile.screen_name,
-                email: opts.profile.email,
-                adminUser: false,
+        user = @findOne(opts.profile[opts.property],opts.type)
+        if !user
+            user =
+                our_id: null
+                service_id: opts.profile[opts.property]
+                service: opts.type
+                name: opts.profile.name || opts.profile.username || opts.profile.screen_name
+                email: opts.profile.email
+                adminUser: false
                 linked_ids: []
-                })
-            jsonString = JSON.stringify(@users,null,2)
-            fs.writeFileSync(@membershipFile,jsonString,'utf-8')
-        return @findOne(opts.profile[opts.property],opts.type)
+                isNew: true
+
+        return user
     
     #End Membership code
     #-------------------------------------------------------------------------------------#
@@ -224,19 +240,15 @@ docpadConfig = {
                 #Note: reference to docpad context passed
                 #as one of the options
                 docpad = opts.docpad
+                
                 if docpad
                     config = docpad.getConfig()
-                    
                     #check membership
                     user = config.findOrCreateUser(opts)
-                    if user
-                        done user
-                    else
-                        done "Error finding or creating user", opts.profile
-                            
+                    done(user)
                 else
                     #Huston - we have a problem
-                    done "User not checked - couldn't get docpad reference",opts.profile
+                    done("User not checked - couldn't get docpad reference",opts.profile)
 
             strategies:
                 facebook:
@@ -327,19 +339,30 @@ docpadConfig = {
                 else
                     next()
             #url to make a user admin
-            server.get /\/makeAdmin/, (req,res) ->
+            server.get /\/makeAdmin/, (req,res,next) ->
                 user = req.user
                 user = latestConfig.makeAdmin(user.service_id,user.service)
                 req.login user, (err) ->
                     if err
                         next(err)
-
                     res.redirect('/admin')
-
-               
-                
                     
-            
+                    
+            server.get '/' , (req,res,next) ->
+                if req.user and req.user.isNew
+                    res.redirect('/sign-up')
+                else
+                    next()
+                    
+            server.post '/createAccount' , (req,res,next) ->
+                name = req.body.NickName
+                if name and req.user and req.user.isNew
+                    req.user.name = name
+                    latestConfig.saveNewUser(req.user)
+                    res.redirect('/')
+                else
+                    next()
+           
 }
 
 # Export our DocPad Configuration
