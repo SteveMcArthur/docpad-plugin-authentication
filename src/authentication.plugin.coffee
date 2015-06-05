@@ -99,7 +99,7 @@ module.exports = (BasePlugin) ->
             # and fetch our urls from it
             latestConfig = docpad.getConfig()
             site = latestConfig.templateData.site
-            siteURL = if site then site.url else '127.0.0.1'
+            siteURL = if site.url then site.url else 'http://127.0.0.1:' + (latestConfig.host or '9778')
             #need this to persist login/authentication details
             session = require('express-session')
 

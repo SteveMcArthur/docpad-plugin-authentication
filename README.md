@@ -50,8 +50,6 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
 
     #-------------------------------------------------------------------------------------#
     #Membership related code used by the findOrCreate method passed to the authentication plugin
-    writeFile: (obj,name) ->
-        fs.writeFileSync(name,util.inspect(obj),'utf-8')
         
     users: []
     
