@@ -57,7 +57,8 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
             membership. All it does is check the user id returned
             by the service is in the validUsers array in the docpad
             config. In a real world app you would probably want to look-up
-            membership in a seperate list or database
+            membership in a seperate list or database. This is only needed
+            if you are implementing your own membership system.
             ###
             findOrCreate: (opts,done) ->
                 #Note: reference to docpad context passed
