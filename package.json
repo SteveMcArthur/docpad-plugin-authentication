@@ -1,6 +1,6 @@
 {
   "name": "docpad-plugin-authentication",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "Handles authentication and login functionality via social login for your docpad application. Protects pages from unauthenticated users",
   "homepage": "https://github.com/SteveMcArthur/docpad-plugin-authentication",
   "keywords": [

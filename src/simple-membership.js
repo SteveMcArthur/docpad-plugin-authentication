@@ -1,5 +1,5 @@
 /*global require, JSON, module, process*/
-var fs = require('fs');
+var fs = require('safefs');
 var path = require('path');
 
 var users = [];
@@ -11,24 +11,28 @@ var afterAuthenticateURL = '/';
 function writeMembershipFile() {
     if (membershipFile) {
         var jsonString = JSON.stringify(users, null, 2);
-        fs.writeFileSync(membershipFile, jsonString, 'utf-8');
+        fs.writeFile(membershipFile, jsonString);
     }
 }
 
-function loadMembershipFile() {
-    if (membershipFile) {
+function loadMembershipFile(dataPath) {
+    dataPath = path.join(dataPath, 'membership');
+    membershipFile = path.join(dataPath, 'membership.json');
 
-        var jsonString = "[]";
-        // Check the membership file exists
-        // If not, create it
+    var jsonString = "[]";
+    fs.ensurePath(dataPath, function (err) {
+        if (err) {
+            throw err;
+        }
         try {
             jsonString = fs.readFileSync(membershipFile, 'utf-8');
-        } catch (err) {
+        } catch(e) {
             fs.writeFileSync(membershipFile, jsonString, 'utf-8');
         }
 
         users = JSON.parse(jsonString);
-    }
+    });
+
 }
 
 function findOne(id, service) {
@@ -106,16 +110,14 @@ function serverSignUpNewUser(req, res, next) {
 function init(userList, server, dataPath) {
     users = userList || [];
     dataPath = dataPath || process.cwd();
-    if (dataPath) {
-        membershipFile = path.join(dataPath, 'membership', 'membership.json');
-        loadMembershipFile();
-    }
+    loadMembershipFile(dataPath);
+
 
     server.post(createAccountURL, serverCreateAccount);
     server.get(afterAuthenticateURL, serverSignUpNewUser);
 }
 
-function getUsers(){
+function getUsers() {
     return users;
 }
 
