@@ -1,7 +1,8 @@
 # Export Plugin
 module.exports = (BasePlugin) ->
     # Define Plugin
-
+    fs = require('fs')
+    util = require('util')
     class AuthenticationPlugin extends BasePlugin
         # Plugin name
         name: 'authentication'
@@ -10,15 +11,16 @@ module.exports = (BasePlugin) ->
             sessionSecret: 'k%AjPwe9%l;wiYMQd££'+(new Date()).getMilliseconds()
             #list of urls that will be protected by authentication
             protectedUrls: ['/admin/*','/analytics/*']
-
+                        
             ###
             lookup function to retrieve membership details after
             authentication. Probably want to replace it with
             your own method that will look up a membership by
             some method (json file, db?)
-            ###
+
             findOrCreate: (opts,done) ->
                 done opts.profile #make sure this is called and the profile or user data is returned
+            ###
 
             ###
             configuration parameters for the various authentication
@@ -63,7 +65,7 @@ module.exports = (BasePlugin) ->
                 if req.isAuthenticated()
                     return next()
                 res.redirect('/login')
-                
+
 
         #class that contains and manages all the login strategys
         socialLoginClass = require("./social-login")
@@ -89,17 +91,37 @@ module.exports = (BasePlugin) ->
             count += 1 for key of strategies
 
             return {strategies,count}
+        
+        simpleMembership: require("./simple-membership")
+
+        setUpMembership: (server) ->
+            #if the user hasn't passed findOrCreate to
+            #the plugin config then use the default
+            #membership system
+            if !@config.findOrCreate
+                userList = @config.userList or null
+                dataPath = @config.dataPath or @docpad.getConfig().rootPath
+                @simpleMembership.init(userList,server,dataPath)
+                @findOrCreate = @simpleMembership.findOrCreateUser
+                @makeAdmin = @simpleMembership.makeAdmin
+                @saveNewUser = @simpleMembership.saveNewUser
+            else
+                @findOrCreate = @config.findOrCreate
+              
+                
 
         serverExtend: (opts) ->
             # Extract the server from the options
             {server} = opts
             docpad = @docpad
+            
             # As we are now running in an event,
             # ensure we are using the latest copy of the docpad configuraiton
             # and fetch our urls from it
             latestConfig = docpad.getConfig()
             site = latestConfig.templateData.site
-            siteURL = if site.url then site.url else 'http://127.0.0.1:' + (latestConfig.host or '9778')
+            siteURL = if site.url then site.url else 'http://127.0.0.1:' + (latestConfig.port or '9778')
+                                            
             #need this to persist login/authentication details
             session = require('express-session')
 
@@ -107,9 +129,18 @@ module.exports = (BasePlugin) ->
                 secret: @config.sessionSecret,
                 saveUninitialized: true,
                 resave: true
+                
+            if @config.findOrCreate
+                @docpad.log('info','Using user supplied membership')
+                findOrCreate = @config.findOrCreate
+            else
+                @docpad.log('info','Using simpleMembership')
+                findOrCreate = @simpleMembership.findOrCreateUser
 
-            findOrCreate = @config.findOrCreate
+                
             ensureAuthenticated = @config.ensureAuthenticated
+            
+
             #this class adds most of the routes that handle
             #the login and redirection process
             @socialLogin = new socialLoginClass(
@@ -117,16 +148,20 @@ module.exports = (BasePlugin) ->
                 url: siteURL
                 context: docpad
                 onAuth: (req, type, uniqueProperty, accessToken, refreshToken, profile, done, docpad) ->
-                    findOrCreate {
-                        profile: profile
-                        property: uniqueProperty
-                        type: type
-                        docpad: docpad
-                    }, (user) ->
-                        done null, user
-                        # Return the user and continue
+                    try
+                        findOrCreate {
+                            profile: profile
+                            property: uniqueProperty
+                            type: type
+                            docpad: docpad
+                        }, (user) ->
+                            done null, user
+                            # Return the user and continue
+                            return
                         return
-                    return
+                    catch err
+                        console.log(err)
+                        done(err)
             )
 
 
@@ -144,6 +179,7 @@ module.exports = (BasePlugin) ->
                     server.get urls,ensureAuthenticated
             else
                 @docpad.log("warn",@name + ": no strategies configured. No pages protected by authentication")
+                
+            @setUpMembership(server)
             @
-            
-        
+

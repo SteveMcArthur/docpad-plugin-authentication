@@ -178,7 +178,9 @@ actions =
             spawn(NODE, [DOCPAD, 'generate'], {output:true, cwd:APP_PATH}).on('close', safe next, step4)
         step4 = ->
             copyFile(pathUtil.join(config.COFFEE_SRC_PATH,'social-login.js'),pathUtil.join(config.COFFEE_OUT_PATH,'social-login.js'), step5)
-        step5 = next
+        step5 = ->
+            copyFile(pathUtil.join(config.COFFEE_SRC_PATH,'simple-membership.js'),pathUtil.join(config.COFFEE_OUT_PATH,'simple-membership.js'), step6)
+        step6 = next
         
         # Start
         step1()

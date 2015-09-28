@@ -242,6 +242,7 @@ docpadConfig = {
                     res.redirect(newUrl+req.url, 301)
                 else
                     next()
+                    
 }
 
 # Export our DocPad Configuration

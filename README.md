@@ -46,56 +46,7 @@ npm install docpad-plugin-authentication --save
 Example configurations for facebook, twitter, google and gihub in the [docpad configuration file](https://docpad.org/docs/config):
 
 ``` coffee
-# ...
-
-    #-------------------------------------------------------------------------------------#
-    #Membership related code used by the findOrCreate method passed to the authentication plugin
-        
-    users: []
-    
-    membershipFile: path.join('membership','membership.json')
-    
-    writeMembershipFile: ->
-        jsonString = JSON.stringify(@users,null,2)
-        fs.writeFileSync(@membershipFile,jsonString,'utf-8')
-    
-    makeAdmin: (id,service) ->
-        user = @findOne(id,service)
-        user.adminUser = true
-        @writeMembershipFile()
-        return @findOne(id,service)
-    
-    findOne: (id,service) ->
-        for item in @users
-            if item.service_id == id && item.service == service
-                return item
-        return false
-    
-    saveNewUser: (user) ->
-        if user.isNew and !@findOne(user.service_id,user.service)
-            user.our_id = @users.length
-            user.isNew = false
-            @users.push(user)
-            @writeMembershipFile()
-               
-    findOrCreateUser: (opts) ->
-        user = @findOne(opts.profile[opts.property],opts.type)
-        if !user
-            user =
-                our_id: null
-                service_id: opts.profile[opts.property]
-                service: opts.type
-                name: opts.profile.name || opts.profile.username || opts.profile.screen_name
-                email: opts.profile.email
-                adminUser: false
-                linked_ids: []
-                isNew: true
-
-        return user
-    
-    #End Membership code
-    #-------------------------------------------------------------------------------------#
-   
+  
     plugins:
         authentication:
             #list of urls that will be protected by authentication 
@@ -202,89 +153,66 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
                                 clientID: process.env.github_devclientID
                                 clientSecret: process.env.github_devclientSecret
                                 
-    # =================================
-    # DocPad Events
 
-    # Here we can define handlers for events that DocPad fires
-    # You can find a full listing of events on the DocPad Wiki
-
-    events:
-    
-        docpadReady: (opts) ->
-            # Prepare
-           
-            docpad = @docpad
-            config = docpad.getConfig()
-            locale = @locale
-            jsonString = "[]"
-            try
-                jsonString = fs.readFileSync(config.membershipFile,'utf-8')
-            catch
-                fs.writeFileSync(config.membershipFile,jsonString,'utf-8')
-            
-            config.users = JSON.parse(jsonString)
-
-            
-
-        # Server Extend
-        # Used to add our own custom routes to the server before the docpad routes are added
-        serverExtend: (opts) ->
-            # Extract the server from the options
-            {server} = opts
-            docpad = @docpad
-
-            # As we are now running in an event,
-            # ensure we are using the latest copy of the docpad configuraiton
-            # and fetch our urls from it
-            latestConfig = docpad.getConfig()
-            oldUrls = latestConfig.templateData.site.oldUrls or []
-            newUrl = latestConfig.templateData.site.url
-
-            # Redirect any requests accessing one of our sites oldUrls to the new site url
-            server.use (req,res,next) ->
-
-                if req.headers.host in oldUrls
-                    res.redirect(newUrl+req.url, 301)
-                else
-                    next()
-                    
-            #url to make a user admin
-            server.get /\/makeAdmin/, (req,res,next) ->
-                user = req.user
-                user = latestConfig.makeAdmin(user.service_id,user.service)
-                req.login user, (err) ->
-                    if err
-                        next(err)
-                    res.redirect('/admin')
-                    
-                    
-            server.get '/' , (req,res,next) ->
-                if req.user and req.user.isNew
-                    res.redirect('/sign-up')
-                else
-                    next()
-                    
-            server.post '/createAccount' , (req,res,next) ->
-                name = req.body.NickName
-                if name and req.user and req.user.isNew
-                    req.user.name = name
-                    latestConfig.saveNewUser(req.user)
-                    res.redirect('/')
-                else
-                    next()
-
-
-
-# ..
 ```
-Note: You don't need to configure a logout URL unless you want to use a URL other than '/logout'.
+Note: You don't need to configure a logout URL unless you want to use a URL other than `/logout`.
 
 Similar configuration for the other services available.
 
-**No implementation of membership**
+## Membership
+The plugin now has a simple membership system built in (since version 2.4.0). This is based on saving a list of users to an external JSON file. No extra configuration is required to use this membership as it is turned on by default. To override it you need only to supply a `findOrCreate` method to the plugin configuration and then implement your own methods for finding, creating and saving users.
+*** Example membership code in the docpad.coffee file
+```
+    #-------------------------------------------------------------------------------------#
+    #Membership related code used by the findOrCreate method passed to the authentication plugin
+    writeFile: (obj,name) ->
+        fs.writeFileSync(name,util.inspect(obj),'utf-8')
+        
+    users: []
+    
+    membershipFile: path.join('membership','membership.json')
+    
+    writeMembershipFile: ->
+        jsonString = JSON.stringify(@users,null,2)
+        fs.writeFileSync(@membershipFile,jsonString,'utf-8')
+    
+    makeAdmin: (id,service) ->
+        user = @findOne(id,service)
+        user.adminUser = true
+        @writeMembershipFile()
+        return @findOne(id,service)
+    
+    findOne: (id,service) ->
+        for item in @users
+            if item.service_id == id && item.service == service
+                return item
+        return false
+    
+    saveNewUser: (user) ->
+        if user.isNew and !@findOne(user.service_id,user.service)
+            user.our_id = @users.length
+            user.isNew = false
+            @users.push(user)
+            @writeMembershipFile()
+               
+    findOrCreateUser: (opts) ->
+        user = @findOne(opts.profile[opts.property],opts.type)
+        if !user
+            user =
+                our_id: null
+                service_id: opts.profile[opts.property]
+                service: opts.type
+                name: opts.profile.name || opts.profile.username || opts.profile.screen_name
+                email: opts.profile.email
+                adminUser: false
+                linked_ids: []
+                isNew: true
 
-There is no implementation of membership with this plugin. This is deliberate. So, out of the box the plugin is not a complete login solution. You need to supply your own membership system. For a simple personal blog this can be a configuration in the docpad.coffee file with a hard coded list of members, probably just yourself. For a few more members you might just store the list in a file. The next step is then to go to a database. All of these will work without the plugin locking you in to one system. Somewhere down the line I intend to create a seperate plugin that will implement a membership system using both the filesystem or a mongo db - but even without that it is straight forward to create your own system.
-
+        return user
+    
+    #End Membership code
+    #-------------------------------------------------------------------------------------#
+```
 
 **Please note**
 
