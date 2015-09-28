@@ -166,8 +166,6 @@ The plugin now has a simple membership system built in (since version 2.4.0). Th
 ``` coffee
     #-------------------------------------------------------------------------------------#
     #Membership related code used by the findOrCreate method passed to the authentication plugin
-    writeFile: (obj,name) ->
-        fs.writeFileSync(name,util.inspect(obj),'utf-8')
         
     users: []
     
