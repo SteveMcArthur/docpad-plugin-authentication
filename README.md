@@ -161,8 +161,9 @@ Similar configuration for the other services available.
 
 ## Membership
 The plugin now has a simple membership system built in (since version 2.4.0). This is based on saving a list of users to an external JSON file. No extra configuration is required to use this membership as it is turned on by default. To override it you need only to supply a `findOrCreate` method to the plugin configuration and then implement your own methods for finding, creating and saving users.
-*** Example membership code in the docpad.coffee file
-```
+
+***Example membership code in the docpad.coffee file***
+``` coffee
     #-------------------------------------------------------------------------------------#
     #Membership related code used by the findOrCreate method passed to the authentication plugin
     writeFile: (obj,name) ->

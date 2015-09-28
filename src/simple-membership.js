@@ -4,12 +4,9 @@ var path = require('path');
 
 var users = [];
 var membershipFile = "";
-var makeAdminURL = new RegExp(/\/makeAdmin/);
 var createAccountURL = '/createAccount';
 var signUpURL = '/sign-up';
 var afterAuthenticateURL = '/';
-var adminURL = '/admin';
-
 
 function writeMembershipFile() {
     if (membershipFile) {
@@ -77,24 +74,6 @@ function makeAdmin(id, service) {
     user.adminUser = true;
     writeMembershipFile();
     return findOne(id, service);
-}
-
-function serverMakeAdmin(req, res, next) {
-    var user = req.user;
-    try {
-        user = makeAdmin(user.service_id, user.service);
-        req.login(user, function (err) {
-            if (err) {
-                console.log(err);
-                next(err);
-            }
-            res.redirect(adminURL);
-
-        });
-    } catch (err) {
-        console.log(err);
-        next(err);
-    }
 }
 
 function serverCreateAccount(req, res, next) {
