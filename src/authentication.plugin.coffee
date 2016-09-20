@@ -65,6 +65,14 @@ module.exports = (BasePlugin) ->
                 if req.isAuthenticated()
                     return next()
                 res.redirect('/login')
+                
+            ###
+            If you want your app to be able to retrieve a list of users from the membership list
+            then you will need to supply a method to this config option - unless you just rely
+            on the default simple membership which populates this method automatically.
+            ###
+            getUsers: () ->
+                return []
 
 
         #class that contains and manages all the login strategys
@@ -105,8 +113,10 @@ module.exports = (BasePlugin) ->
                 @findOrCreate = @simpleMembership.findOrCreateUser
                 @makeAdmin = @simpleMembership.makeAdmin
                 @saveNewUser = @simpleMembership.saveNewUser
+                @getUsers = @simpleMembership.getUsers
             else
                 @findOrCreate = @config.findOrCreate
+                @getUsers = @config.getUsers
               
                 
 
