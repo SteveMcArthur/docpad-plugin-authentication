@@ -6,27 +6,13 @@
 
 Handles authentication and login functionality via social login for your docpad application. Protects pages from unauthenticated users. Uses the node module [social-login](https://github.com/26medias/social-login) to standardise the configuration interface to the various login strategies and handle routing and redirection.
 
-**Note:** Please ensure you install the latest version as a number of bug fixes were implemented in v2.0.7
-
-## Support ##
+## Support
 The following services are supported:
 
 *   facebook
 *   twitter
 *   google
 *   github
-
-The following services were removed as dependencies with version 2.3.0. Mainly because there was little demand for them and so were unecessary dependencies. If those services are required, add the corresponding dependency to the package.json file.
-
-*   instagram
-*   linkedin
-*   amazon
-*   dropbox
-*   foursquare
-*   imgur
-*   meetup
-*   wordpress
-*   tumblr
 
 
 ## Install
@@ -51,42 +37,6 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
         authentication:
             #list of urls that will be protected by authentication 
             protectedUrls: ['/admin/*','/analytics/*','/super-secret-url/*']
-            
-            ###
-            This is a simple example of a method use to check
-            membership. All it does is check the user id returned
-            by the service is in the validUsers array in the docpad
-            config. In a real world app you would probably want to look-up
-            membership in a seperate list or database. This is only needed
-            if you are implementing your own membership system.
-            ###
-            findOrCreate: (opts,done) ->
-                #Note: reference to docpad context passed
-                #as one of the options
-                docpad = opts.docpad
-                
-                if docpad
-                    config = docpad.getConfig()
-                    #check membership
-                    user = config.findOrCreateUser(opts)
-                    done(user)
-                else
-                    #Houston - we have a problem
-                    done("User not checked - couldn't get docpad reference",opts.profile)
-                    
-            ###
-            Middleware function to ensure user is authenticated.
-            This will be applied to any url in the protectedUrls config option.
-            In this default function, if the request is authenticated (typically via a persistent login session),
-            the request will proceed.  Otherwise, the user will be redirected to the
-            login page. Substitute your own function (via docpad.config) that will perhaps do
-            some more complicated checking (eg for user)
-            ###
-            ensureAuthenticated: (req, res, next) ->
-                if req.isAuthenticated()
-                    return next();
-            
-                res.redirect('/login') 
                 
             ###
             configuration parameters for the various authentication
@@ -158,61 +108,10 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
 ```
 Note: You don't need to configure a logout URL unless you want to use a URL other than `/logout`.
 
-Similar configuration for the other services available.
 
 ## Membership
 The plugin now has a simple membership system built in (since version 2.4.0). This is based on saving a list of users to an external JSON file. No extra configuration is required to use this membership as it is turned on by default. To override it you need only to supply a `findOrCreate` method to the plugin configuration and then implement your own methods for finding, creating and saving users.
 
-***Example membership code in the docpad.coffee file***
-``` coffee
-    #-------------------------------------------------------------------------------------#
-    #Membership related code used by the findOrCreate method passed to the authentication plugin
-        
-    users: []
-    
-    membershipFile: path.join('membership','membership.json')
-    
-    writeMembershipFile: ->
-        jsonString = JSON.stringify(@users,null,2)
-        fs.writeFileSync(@membershipFile,jsonString,'utf-8')
-    
-    makeAdmin: (id,service) ->
-        user = @findOne(id,service)
-        user.adminUser = true
-        @writeMembershipFile()
-        return @findOne(id,service)
-    
-    findOne: (id,service) ->
-        for item in @users
-            if item.service_id == id && item.service == service
-                return item
-        return false
-    
-    saveNewUser: (user) ->
-        if user.isNew and !@findOne(user.service_id,user.service)
-            user.our_id = @users.length
-            user.isNew = false
-            @users.push(user)
-            @writeMembershipFile()
-               
-    findOrCreateUser: (opts) ->
-        user = @findOne(opts.profile[opts.property],opts.type)
-        if !user
-            user =
-                our_id: null
-                service_id: opts.profile[opts.property]
-                service: opts.type
-                name: opts.profile.name || opts.profile.username || opts.profile.screen_name
-                email: opts.profile.email
-                adminUser: false
-                linked_ids: []
-                isNew: true
-
-        return user
-    
-    #End Membership code
-    #-------------------------------------------------------------------------------------#
-```
 
 **Please note**
 

@@ -117,7 +117,6 @@ module.exports = (BasePlugin) ->
             else
                 @findOrCreate = @config.findOrCreate
                 @getUsers = @config.getUsers
-              
                 
 
         serverExtend: (opts) ->
