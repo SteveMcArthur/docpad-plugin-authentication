@@ -146,11 +146,11 @@ actions =
         # Steps
         step1 = ->
             console.log('\nnpm install (for app):')
-            spawn(NPM, ['install'], {output:true, cwd:APP_PATH}).on('close', safe next, step2)
+            spawn(NPM, ['install'], {stdio:'inherit', cwd:APP_PATH}).on('close', safe next, step2)
         step2 = ->
             return step3()  if !config.TEST_PATH or !fsUtil.existsSync(config.TEST_PATH)
             console.log('\nnpm install (for test):')
-            spawn(NPM, ['install'], {output:true, cwd:config.TEST_PATH}).on('close', safe next, step3)
+            spawn(NPM, ['install'], {stdio:'inherit', cwd:config.TEST_PATH}).on('close', safe next, step3)
         step3 = ->
             return step4()  if !fsUtil.existsSync(DOCPAD_PATH)
             console.log('\nnpm install (for docpad tests):')
