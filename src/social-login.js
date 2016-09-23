@@ -110,7 +110,7 @@ socialLoginClass.prototype.use = function (settings) {
 };
 socialLoginClass.prototype.init = function () {
     var scope = this;
-
+    
     // Setup PassportJS
     this.app.use(passport.initialize());
     this.app.use(passport.session());

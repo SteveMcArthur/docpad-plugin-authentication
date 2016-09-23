@@ -73,10 +73,31 @@ module.exports = (BasePlugin) ->
             ###
             getUsers: () ->
                 return []
+            
+            forceServerCreation: false
 
 
         #class that contains and manages all the login strategys
         socialLoginClass = require("./social-login")
+        
+        serverBeforeFn: () ->
+            docpad = @
+            docpad.log("info","Authentication: creating servers")
+            opts = {}
+            http = require('http')
+            express = require('express')
+            if !docpad.serverExpress
+                opts.serverExpress = express()
+                opts.serverHttp = http.createServer(opts.serverExpress)
+                docpad.setServer(opts)
+                docpad.log("info","Authentication: creating servers")
+                
+        setConfig: ->
+            super
+            
+            plugin = @
+            if plugin.getConfig().forceServerCreation
+                plugin.serverBefore = plugin.serverBeforeFn
 
 
         #check all strategies passed to config have values
@@ -118,19 +139,22 @@ module.exports = (BasePlugin) ->
                 @findOrCreate = @config.findOrCreate
                 @getUsers = @config.getUsers
                 
-
-        serverExtend: (opts) ->
-            # Extract the server from the options
-            {server} = opts
+        createSocialLoginClass: (server) ->
             docpad = @docpad
+            plugin = @
             
-            # As we are now running in an event,
-            # ensure we are using the latest copy of the docpad configuraiton
-            # and fetch our urls from it
-            latestConfig = docpad.getConfig()
-            site = latestConfig.templateData.site
-            siteURL = if site.url then site.url else 'http://127.0.0.1:' + (latestConfig.port or '9778')
-                                            
+            cfg = docpad.getConfig()
+            site = cfg.templateData.site
+            siteURL = if site.url then site.url else 'http://127.0.0.1:' + (cfg.port or '9778')
+                
+            if plugin.config.findOrCreate
+                docpad.log('info','Using user supplied membership')
+                findOrCreate = plugin.config.findOrCreate
+            else
+                docpad.log('info','Using simpleMembership')
+                findOrCreate = plugin.simpleMembership.findOrCreateUser
+                
+                
             #need this to persist login/authentication details
             session = require('express-session')
 
@@ -138,18 +162,7 @@ module.exports = (BasePlugin) ->
                 secret: @config.sessionSecret,
                 saveUninitialized: true,
                 resave: true
-                
-            if @config.findOrCreate
-                @docpad.log('info','Using user supplied membership')
-                findOrCreate = @config.findOrCreate
-            else
-                @docpad.log('info','Using simpleMembership')
-                findOrCreate = @simpleMembership.findOrCreateUser
-
-                
-            ensureAuthenticated = @config.ensureAuthenticated
             
-
             #this class adds most of the routes that handle
             #the login and redirection process
             @socialLogin = new socialLoginClass(
@@ -172,7 +185,20 @@ module.exports = (BasePlugin) ->
                         console.log(err)
                         done(err)
             )
+                
+                
 
+        serverExtend: (opts) ->
+            # Extract the server from the options
+            {server} = opts
+            docpad = @docpad
+
+                
+            ensureAuthenticated = @getConfig().ensureAuthenticated
+            
+            if !@socialLogin
+                @createSocialLoginClass(server)
+            
 
             socialConfig = @getValidStrategies()
             #prior to 2.0.7 docpad would fall over

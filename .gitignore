@@ -9,4 +9,6 @@ node_modules/
 out/
 
 *.bat
-/.env
+.env
+**/.env
+example/login-test-site/.env

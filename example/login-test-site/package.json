@@ -41,9 +41,7 @@
     "docpad": "~6.73.5",
     "docpad-plugin-cleanurls": "2.7.0",
     "docpad-plugin-eco": "~2.1.0",
-    "docpad-plugin-marked": "~2.2.0",
-    "docpad-plugin-partials": "~2.9.0",
-	"docpad-plugin-authentication": "^2.2.0"
+    "docpad-plugin-marked": "~2.2.0"
   },
   "main": "node_modules/docpad/bin/docpad-server"
 }

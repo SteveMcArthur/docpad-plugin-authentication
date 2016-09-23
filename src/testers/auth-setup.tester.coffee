@@ -7,7 +7,7 @@ module.exports = (testers) ->
     util = require('util')
 
     # Define My Tester
-    class MyTester extends testers.ServerTester
+    class AuthSetup extends testers.ServerTester
         # Test Generate
         testGenerate: testers.RendererTester::testGenerate
 
@@ -18,42 +18,34 @@ module.exports = (testers) ->
 
             # Create the server
             super
-
+            
+            msg = tester.config.msg || ""
+            forceServer =  if msg != "" then true else false
+ 
             # Test
-            @suite 'authentication', (suite,test) ->
+            @suite msg+' auth setup', (suite,test) ->
                 # Prepare
                 baseUrl = "http://localhost:#{tester.docpad.config.port}"
                 outExpectedPath = tester.config.outExpectedPath
                 plugin = tester.docpad.getPlugin('authentication')
                 
-                test 'plugin config should have strategy property', (done) ->
-                    config = plugin.getConfig()
-                    expect(config).to.have.property('strategies')
-                    done()
-                    
-                test 'plugin config should have protectedUrls property', (done) ->
-                    config = plugin.getConfig()
-                    expect(config).to.have.property('protectedUrls')
-                    done()
-                    
-                test 'plugin should have getValidStrategies property', (done) ->
-                    expect(plugin).to.have.property('getValidStrategies')
-                    done()
                     
                 test 'getValidStrategies should return count of 1', (done) ->
                     count = plugin.getValidStrategies().count
                     expect(count).to.equal(1)
                     done()
-                
-                test 'plugin should have socialLogin property', (done) ->
-                    expect(plugin).to.have.property('socialLogin')
+
+                test 'forceServerCreation should be '+forceServer, (done) ->
+                    expect(plugin.getConfig().forceServerCreation).to.equal(forceServer)
                     done()
+
 
                 test 'server should redirect to login page when not authenticated: admin.html', (done) ->
                     fileUrl = "#{baseUrl}/admin.html"
                     request fileUrl, (err,response,actual) ->
                         return done(err)  if err
                         actualStr = actual.toString()
+                        console.log(actual)
                         expectedStr = 'Login'
                         expect(actualStr).to.equal(expectedStr)
                         done()
@@ -67,17 +59,3 @@ module.exports = (testers) ->
                         expect(actualStr).to.equal(expectedStr)
                         done()
                         
-                        
-                        
-
-                    
-                    
-                
-                    
-                
-                    
-                
-                    
-                    
-
-

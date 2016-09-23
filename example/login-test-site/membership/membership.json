@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "our_id": 1,
+    "service_id": 2044632,
+    "service": "github",
+    "name": "Steve Mc",
+    "email": "contact@stevemcarthur.co.uk",
+    "adminUser": false,
+    "linked_ids": [],
+    "isNew": false
+  }
+]

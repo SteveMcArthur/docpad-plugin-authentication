@@ -104,12 +104,6 @@ docpadConfig = {
             
         getObjectJSON: (obj) ->
             return util.inspect(obj)
-        
-
-        
-        
-
-
 
 
     # =================================
@@ -181,75 +175,13 @@ docpadConfig = {
             port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || process.env.OPENSHIFT_INTERNAL_PORT || 9778
 
     
-    #-------------------------------------------------------------------------------------#
-    #Membership related code used by the findOrCreate method passed to the authentication plugin
-    writeFile: (obj,name) ->
-        fs.writeFileSync(name,util.inspect(obj),'utf-8')
-        
-    users: []
-    
-    membershipFile: path.join('membership','membership.json')
-    
-    writeMembershipFile: ->
-        jsonString = JSON.stringify(@users,null,2)
-        fs.writeFileSync(@membershipFile,jsonString,'utf-8')
-    
-    makeAdmin: (id,service) ->
-        user = @findOne(id,service)
-        user.adminUser = true
-        @writeMembershipFile()
-        return @findOne(id,service)
-    
-    findOne: (id,service) ->
-        for item in @users
-            if item.service_id == id && item.service == service
-                return item
-        return false
-    
-    saveNewUser: (user) ->
-        if user.isNew and !@findOne(user.service_id,user.service)
-            user.our_id = @users.length
-            user.isNew = false
-            @users.push(user)
-            @writeMembershipFile()
-               
-    findOrCreateUser: (opts) ->
-        user = @findOne(opts.profile[opts.property],opts.type)
-        if !user
-            user =
-                our_id: null
-                service_id: opts.profile[opts.property]
-                service: opts.type
-                name: opts.profile.name || opts.profile.username || opts.profile.screen_name
-                email: opts.profile.email
-                adminUser: false
-                linked_ids: []
-                isNew: true
-
-        return user
-    
-    #End Membership code
-    #-------------------------------------------------------------------------------------#
             
     # Configure Plugins
     # Should contain the plugin short names on the left, and the configuration to pass the plugin on the right
     plugins:
         authentication:
             protectedUrls: ['/admin/*','/analytics/*','/super-secret-url/*']
-            findOrCreate: (opts,done) ->
-                #Note: reference to docpad context passed
-                #as one of the options
-                docpad = opts.docpad
-                
-                if docpad
-                    config = docpad.getConfig()
-                    #check membership
-                    user = config.findOrCreateUser(opts)
-                    done(user)
-                else
-                    #Huston - we have a problem
-                    done("User not checked - couldn't get docpad reference",opts.profile)
-
+            forceServerCreation: true
             strategies:
                 facebook:
                     settings:
@@ -300,21 +232,6 @@ docpadConfig = {
     # You can find a full listing of events on the DocPad Wiki
 
     events:
-    
-        docpadReady: (opts) ->
-            # Prepare
-           
-            docpad = @docpad
-            config = docpad.getConfig()
-            locale = @locale
-            jsonString = "[]"
-            try
-                jsonString = fs.readFileSync(config.membershipFile,'utf-8')
-            catch
-                fs.writeFileSync(config.membershipFile,jsonString,'utf-8')
-            
-            config.users = JSON.parse(jsonString)
-
             
 
         # Server Extend

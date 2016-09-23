@@ -1,6 +1,8 @@
 # Export Plugin
 module.exports = (BasePlugin) ->
     # Define Plugin
+    fs = require('fs')
+    util = require('util')
     class AuthenticationPlugin extends BasePlugin
         # Plugin name
         name: 'authentication'
@@ -9,15 +11,16 @@ module.exports = (BasePlugin) ->
             sessionSecret: 'k%AjPwe9%l;wiYMQd££'+(new Date()).getMilliseconds()
             #list of urls that will be protected by authentication
             protectedUrls: ['/admin/*','/analytics/*']
-
+                        
             ###
             lookup function to retrieve membership details after
             authentication. Probably want to replace it with
             your own method that will look up a membership by
             some method (json file, db?)
-            ###
+
             findOrCreate: (opts,done) ->
                 done opts.profile #make sure this is called and the profile or user data is returned
+            ###
 
             ###
             configuration parameters for the various authentication
@@ -62,11 +65,42 @@ module.exports = (BasePlugin) ->
                 if req.isAuthenticated()
                     return next()
                 res.redirect('/login')
+                
+            ###
+            If you want your app to be able to retrieve a list of users from the membership list
+            then you will need to supply a method to this config option - unless you just rely
+            on the default simple membership which populates this method automatically.
+            ###
+            getUsers: () ->
+                return []
+            
+            forceServerCreation: false
+
 
         #class that contains and manages all the login strategys
         socialLoginClass = require("./social-login")
-        #need this to persist login/authentication details
-        session = require('express-session')
+        
+        serverBeforeFn: () ->
+            docpad = @
+            docpad.log("info","Authentication: creating servers")
+            opts = {}
+            http = require('http')
+            express = require('express')
+            if !docpad.serverExpress
+                opts.serverExpress = express()
+                opts.serverHttp = http.createServer(opts.serverExpress)
+                docpad.setServer(opts)
+                docpad.log("info","Authentication: creating servers")
+                
+        setConfig: ->
+            super
+            
+            plugin = @
+            console.log("setConfig...")
+            if plugin.getConfig().forceServerCreation
+                console.log("assign server before..")
+                plugin.serverBefore = plugin.serverBeforeFn
+
 
         #check all strategies passed to config have values
         #for their clientID or clientSecret. If not, remove
@@ -88,45 +122,85 @@ module.exports = (BasePlugin) ->
             count += 1 for key of strategies
 
             return {strategies,count}
+        
+        simpleMembership: require("./simple-membership")
 
-       
-
-        serverExtend: (opts) ->
-            # Extract the server from the options
-            {server} = opts
+        setUpMembership: (server) ->
+            #if the user hasn't passed findOrCreate to
+            #the plugin config then use the default
+            #membership system
+            if !@config.findOrCreate
+                userList = @config.userList or null
+                dataPath = @config.dataPath or @docpad.getConfig().rootPath
+                @simpleMembership.init(userList,server,dataPath)
+                @findOrCreate = @simpleMembership.findOrCreateUser
+                @makeAdmin = @simpleMembership.makeAdmin
+                @saveNewUser = @simpleMembership.saveNewUser
+                @getUsers = @simpleMembership.getUsers
+            else
+                @findOrCreate = @config.findOrCreate
+                @getUsers = @config.getUsers
+                
+        createSocialLoginClass: (server) ->
             docpad = @docpad
-            # As we are now running in an event,
-            # ensure we are using the latest copy of the docpad configuraiton
-            # and fetch our urls from it
-            latestConfig = docpad.getConfig()
-            siteURL = latestConfig.templateData.site.url
+            plugin = @
+            
+            cfg = docpad.getConfig()
+            site = cfg.templateData.site
+            siteURL = if site.url then site.url else 'http://127.0.0.1:' + (cfg.port or '9778')
+                
+            if plugin.config.findOrCreate
+                docpad.log('info','Using user supplied membership')
+                findOrCreate = plugin.config.findOrCreate
+            else
+                docpad.log('info','Using simpleMembership')
+                findOrCreate = plugin.simpleMembership.findOrCreateUser
+                
+                
+            #need this to persist login/authentication details
+            session = require('express-session')
 
             server.use session
                 secret: @config.sessionSecret,
                 saveUninitialized: true,
                 resave: true
-
-            findOrCreate = @config.findOrCreate
-            ensureAuthenticated = @config.ensureAuthenticated
+            
             #this class adds most of the routes that handle
             #the login and redirection process
-            socialLogin = new socialLoginClass(
+            @socialLogin = new socialLoginClass(
                 app: server
                 url: siteURL
                 context: docpad
                 onAuth: (req, type, uniqueProperty, accessToken, refreshToken, profile, done, docpad) ->
-                    findOrCreate {
-                        profile: profile
-                        property: uniqueProperty
-                        type: type
-                        docpad: docpad
-                    }, (user) ->
-                        done null, user
-                        # Return the user and continue
+                    try
+                        findOrCreate {
+                            profile: profile
+                            property: uniqueProperty
+                            type: type
+                            docpad: docpad
+                        }, (user) ->
+                            done null, user
+                            # Return the user and continue
+                            return
                         return
-                    return
+                    catch err
+                        console.log(err)
+                        done(err)
             )
+                
+                
 
+        serverExtend: (opts) ->
+            # Extract the server from the options
+            {server} = opts
+            docpad = @docpad
+
+                
+            ensureAuthenticated = @config.ensureAuthenticated
+            
+            if !@socialLogin
+                @createSocialLoginClass(server)
+            
 
             socialConfig = @getValidStrategies()
             #prior to 2.0.7 docpad would fall over
@@ -134,7 +208,7 @@ module.exports = (BasePlugin) ->
             if socialConfig.count > 0
                 #Pass the various settings for the
                 #various services to the socialLogin class
-                socialLogin.use(socialConfig.strategies)
+                @socialLogin.use(socialConfig.strategies)
 
                 #protect the configured URLs
                 if @config.protectedUrls.length > 0
@@ -142,6 +216,7 @@ module.exports = (BasePlugin) ->
                     server.get urls,ensureAuthenticated
             else
                 @docpad.log("warn",@name + ": no strategies configured. No pages protected by authentication")
-
-
+                
+            @setUpMembership(server)
             @
+
