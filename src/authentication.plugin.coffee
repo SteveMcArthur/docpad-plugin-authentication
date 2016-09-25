@@ -90,7 +90,7 @@ module.exports = (BasePlugin) ->
                 opts.serverExpress = express()
                 opts.serverHttp = http.createServer(opts.serverExpress)
                 docpad.setServer(opts)
-                docpad.log("info","Authentication: creating servers")
+                docpad.log("info","Authentication: servers created")
                 
         setConfig: ->
             super
