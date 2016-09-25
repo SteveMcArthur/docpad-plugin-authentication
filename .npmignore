@@ -17,9 +17,14 @@ Makefile
 BACKERS.md
 CONTRIBUTING.md
 HISTORY.md
+.brackets.json
+coffeelint.json
+.npmignore
+example/
 **/src/
 **/test/
 *.bat
+.env
 
 # Other Package Definitions
 template.js
