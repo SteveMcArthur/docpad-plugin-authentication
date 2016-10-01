@@ -80,8 +80,9 @@ module.exports = (BasePlugin) ->
         #class that contains and manages all the login strategys
         socialLoginClass = require("./social-login")
         
-        serverBeforeFn: () ->
+        createDocPadServer: () ->
             docpad = @
+            plugin = docpad.getPlugin('authentication')
             docpad.log("info","Authentication: creating servers")
             opts = {}
             http = require('http')
@@ -91,13 +92,14 @@ module.exports = (BasePlugin) ->
                 opts.serverHttp = http.createServer(opts.serverExpress)
                 docpad.setServer(opts)
                 docpad.log("info","Authentication: servers created")
+                plugin.createSocialLoginClass(opts.serverExpress)
                 
         setConfig: ->
             super
             
             plugin = @
             if plugin.getConfig().forceServerCreation
-                plugin.serverBefore = plugin.serverBeforeFn
+                plugin.generated = plugin.createDocPadServer
 
 
         #check all strategies passed to config have values
@@ -185,20 +187,8 @@ module.exports = (BasePlugin) ->
                         console.log(err)
                         done(err)
             )
-                
-                
 
-        serverExtend: (opts) ->
-            # Extract the server from the options
-            {server} = opts
-            docpad = @docpad
-
-                
             ensureAuthenticated = @getConfig().ensureAuthenticated
-            
-            if !@socialLogin
-                @createSocialLoginClass(server)
-            
 
             socialConfig = @getValidStrategies()
             #prior to 2.0.7 docpad would fall over
@@ -215,6 +205,16 @@ module.exports = (BasePlugin) ->
             else
                 @docpad.log("warn",@name + ": no strategies configured. No pages protected by authentication")
                 
+                
+
+        serverExtend: (opts) ->
+            # Extract the server from the options
+            {server} = opts
+            docpad = @docpad
+            
+            if !@socialLogin
+                @createSocialLoginClass(server)
+              
             @setUpMembership(server)
             @
 

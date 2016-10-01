@@ -55,7 +55,7 @@ module.exports = (testers) ->
 
                 @suite 'plugin methods are functions', (suite,test,done) ->
                     expectedMethods = [
-                        "serverBeforeFn",
+                        "createDocPadServer",
                         "getValidStrategies",
                         "setUpMembership",
                         "createSocialLoginClass",

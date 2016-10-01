@@ -66,6 +66,8 @@ function findOrCreateUser(opts, callback) {
             email: opts.profile.email,
             adminUser: false,
             linked_ids: [],
+            roles: opts.roles || ["user"],
+            emailValidated: opts.emailValidated || false,
             isNew: true
         };
     }
