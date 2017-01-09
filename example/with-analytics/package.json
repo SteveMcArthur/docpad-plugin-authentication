@@ -1,0 +1,45 @@
+{
+  "name": "docpad-analytics-website",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Website demonstrating the analytics and authentication plugins",
+  "homepage": "https://github.com/SteveMcArthur/docpad-plugin-authentication/tree/master/example",
+  "keywords": [
+    "docpad",
+    "website",
+    "authentication",
+    "analytics",
+    "plugins"
+  ],
+  "author": "Steve McArthur <contact@stevemcarthur.co.uk> (http://www.stevemcarthur.co.uk)",
+  "maintainers": [
+    "Steve McArthur <contact@stevemcarthur.co.uk> (https://github.com/SteveMcArthur)"
+  ],
+  "contributors": [
+    "Steve McArthur <contact@stevemcarthur.co.uk> (https://github.com/SteveMcArthur)"
+  ],
+  "bugs": {
+    "url": "https://github.com/SteveMcArthur/docpad-plugin-authentication/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": "4.4.6",
+    "npm": "3.10.2"
+  },
+  "dependencies": {
+    "docpad": "~6.75.2",
+    "docpad-plugin-analytics": "^2.1.1",
+    "docpad-plugin-authentication": "^2.4.6",
+    "docpad-plugin-eco": "~2.1.0",
+    "docpad-plugin-marked": "~2.3.0",
+    "docpad-plugin-partials": "~2.9.2",
+    "lodash": "^4.6.1"
+  },
+  "devDependencies": {
+    "docpad-plugin-livereload": "~2.6.1"
+  },
+  "main": "node_modules/docpad/bin/docpad-server"
+}

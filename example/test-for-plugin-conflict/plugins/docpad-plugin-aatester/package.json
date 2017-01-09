@@ -1,0 +1,48 @@
+{
+  "name": "docpad-plugin-aatester",
+  "version": "2.0.0",
+  "description": "For testing purposes - doesn't actually do anything",
+  "homepage": "https://github.com/SteveMcArthur/{}",
+  "keywords": [
+    "docpad",
+    "docpad-plugin"
+  ],
+  "author": "Steve McArthur <contact@stevemcarthur.co.uk> (http://www.stevemcarthur.co.uk)",
+  "maintainers": [
+    "Steve McArthur <contact@stevemcarthur.co.uk> (https://github.com/SteveMcArthur)"
+  ],
+  "contributors": [
+    "Steve McArthur (https://github.com/SteveMcArthur)"
+  ],
+  "bugs": {
+    "url": "https://github.com/SteveMcArthur/{}/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SteveMcArthur/{}"
+  },
+  "engines": {
+    "node": ">=0.8"
+  },
+  "peerDependencies": {
+    "docpad": "6"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "coffee-script": "~1.6.3",
+    "docpad": "6",
+    "joe": "1.6.0",
+    "chai": "^3.5.0",
+    "assert-helpers": "^4.4.0",
+	"joe-reporter-console": "1.2.1"
+  },
+  "main": "./out/aatester.plugin.js",
+  "scripts": {
+    "test": ""
+  },
+  "license": "MIT",
+  "cakeConfiguration": {
+    "COFFEE_SRC_PATH": "src"
+  }
+}

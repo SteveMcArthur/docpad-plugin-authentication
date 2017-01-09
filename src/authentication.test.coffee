@@ -2,6 +2,7 @@
 # Test our plugin using DocPad's Testers
 pathUtil = require('path')
 fs = require('fs')
+util = require('util')
 testerBase =
     pluginPath: __dirname+'/..'
     autoExit: 'safe'
@@ -42,9 +43,15 @@ docpadConfig2 = JSON.parse(JSON.stringify(docpadConfig))
 docpadConfig2.plugins.authentication.ensureAuthenticated = ensureAuthenticated
 docpadConfig2.plugins.authentication.forceServerCreation = true
 
+docpadConfig3 = JSON.parse(JSON.stringify(docpadConfig2))
+docpadConfig3.plugins.authentication.ensureAuthenticated = ensureAuthenticated
+docpadConfig3.plugins.authentication.forceServerCreation = false
+                               
+
 require('docpad').require('testers')
-    .test(getTesterConfig('properties-exist'),docpadConfig)
+    #.test(getTesterConfig('properties-exist'),docpadConfig)
     .test(getTesterConfig('auth-setup'),docpadConfig)
-    .test(getTesterConfig('auth-setup','forceServerCreation: '),docpadConfig2)
+    .test(getTesterConfig('auth-setup',{forceServerCreation: true}),docpadConfig2)
     .test(getTesterConfig('login'),docpadConfig)
-    .test(getTesterConfig('login','forceServerCreation: '),docpadConfig2)
+    .test(getTesterConfig('login',{forceServerCreation: true}),docpadConfig2)
+    .test(getTesterConfig('auth-setup2',{forceServerCreation: true}),docpadConfig3)

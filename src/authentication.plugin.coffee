@@ -96,10 +96,9 @@ module.exports = (BasePlugin) ->
                 
         setConfig: ->
             super
-            
             plugin = @
             if plugin.getConfig().forceServerCreation
-                plugin.generated = plugin.createDocPadServer
+                plugin.docpadReady = plugin.createDocPadServer
 
 
         #check all strategies passed to config have values

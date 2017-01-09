@@ -8,9 +8,7 @@ module.exports = (testers) ->
 
     # Define My Tester
     class PropertiesExistTester extends testers.ServerTester
-        # Test Generate
-        testGenerate: testers.RendererTester::testGenerate
-
+   
         # Custom test for the server
         testServer: (next) ->
             # Prepare

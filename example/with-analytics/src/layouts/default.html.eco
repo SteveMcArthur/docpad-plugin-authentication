@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+	<!-- Standard Meta -->
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<!-- Site Properities -->
+	<title><%= @getPreparedTitle() %></title>
+	<meta name="description" content="<%= @getPreparedDescription() %>" />
+	<meta name="keywords" content="<%= @getPreparedKeywords() %>" />
+
+	<!-- DocPad Meta -->
+	<%- @getBlock('meta').toHTML() %>
+
+	<!-- DocPad Styles + Our Own -->
+	<%- @getBlock('styles').add(@site.styles).toHTML() %>
+        <style>
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align:center;
+        }
+        header h1 {
+            padding: 0.2em 0;
+            margin: 0;
+        }
+        header h1 a {
+            color: #fff;
+            text-decoration: none;
+        }
+    .button {
+        margin-right: 1em;
+        margin-left: 1em;
+        margin-bottom: 0;
+        padding: 0.667em 2em;
+        border: 2px solid rgba(85, 193, 231, 1);
+        color: rgba(85, 193, 231, 1) !important;
+        cursor: pointer;
+    }
+    
+    .button:hover {
+        border: 2px solid rgba(85, 193, 231, 1);
+        background-color: rgba(85, 193, 231, 1);
+        color: #fff !important;
+    }
+    
+    .container {
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    #results {
+        text-align: center;
+        margin: 3em;
+    }
+    
+    canvas {
+        width: 800px;
+        height: 600px;
+        margin: auto;
+    }
+    
+    ul#menu {
+        padding: 0;
+    }
+    
+    ul#menu li {
+        display: inline;
+    }
+    
+    ul#menu li a {
+        background-color: rgba(85, 193, 231, 1);
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px 4px 0 0;
+        cursor: pointer;
+    }
+    
+    ul#menu li a:hover {
+        background-color: orange;
+    }
+    ul#menu li a.active {
+        background-color: orange;
+    }
+    
+    .hidden {
+        display: none;
+    }
+    .menu-div {
+        width: 100%;
+        text-align: center;
+    }
+    
+</style>
+
+	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+</head>
+<body>
+	<!--[if lt IE 7]>
+	<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+
+	<header>
+		<h1><a href="<%= @site.url %>"><%- @site.title %></a></h1>
+	</header>
+    <div class="menu-div"><ul id="menu"><li><a href="/admin.html">Admin Page</a></li><li><a href="/login.html">Login Page</a></li></ul></div>
+	<article>
+		<%- @content %>
+	</article>
+	<footer></footer>
+
+	<!-- DocPad Scripts + Our Own -->
+	<%- @getBlock('scripts').add(@site.scripts).toHTML() %>
+</body>
+</html>

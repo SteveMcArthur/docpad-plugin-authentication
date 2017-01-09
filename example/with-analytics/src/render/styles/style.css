@@ -1,0 +1,19 @@
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+thead {
+    background: rgba(52,73,94,0.94);
+    color: #ECF0F1;
+}
+th, td {
+    vertical-align: bottom;
+    border-bottom: 2px solid #ddd;
+    padding: 8px;
+    line-height: 1.42857143;
+}
+tbody tr {
+    background-color: #f9f9f9;
+}
