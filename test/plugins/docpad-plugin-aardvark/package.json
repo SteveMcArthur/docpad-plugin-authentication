@@ -1,11 +1,12 @@
 {
-  "name": "docpad-plugin-aatester",
+  "name": "docpad-plugin-aardvark",
   "version": "2.0.0",
-  "description": "For testing purposes - doesn't actually do anything",
-  "homepage": "https://github.com/SteveMcArthur/{}",
+  "description": "DocPad plugin that adds an aardvark URL. Plain and simple for testing purposes",
+  "homepage": "https://github.com/SteveMcArthur/docpad-plugin-aardvark",
   "keywords": [
     "docpad",
-    "docpad-plugin"
+    "docpad-plugin",
+    "aardvark"
   ],
   "author": "Steve McArthur <contact@stevemcarthur.co.uk> (http://www.stevemcarthur.co.uk)",
   "maintainers": [
@@ -15,11 +16,11 @@
     "Steve McArthur (https://github.com/SteveMcArthur)"
   ],
   "bugs": {
-    "url": "https://github.com/SteveMcArthur/{}/issues"
+    "url": "https://github.com/SteveMcArthur/docpad-plugin-aardvark/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SteveMcArthur/{}"
+    "url": "https://github.com/SteveMcArthur/docpad-plugin-aardvark.git"
   },
   "engines": {
     "node": ">=0.8"
@@ -27,19 +28,15 @@
   "peerDependencies": {
     "docpad": "6"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "coffee-script": "~1.6.3",
     "docpad": "6",
-    "joe": "1.6.0",
-    "chai": "^3.5.0",
-    "assert-helpers": "^4.4.0",
-	"joe-reporter-console": "1.2.1"
+    "projectz": "~0.3.13"
   },
-  "main": "./out/aatester.plugin.js",
+  "main": "./out/aardvark.plugin.js",
   "scripts": {
-    "test": ""
+    "test": "node ./out/aardvark.test.js"
   },
   "license": "MIT",
   "cakeConfiguration": {

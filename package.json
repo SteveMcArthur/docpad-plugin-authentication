@@ -57,7 +57,9 @@
     "chai": "~1.9.0",
     "coffee-script": "^1.9.1",
     "docpad": ">=6.3 <7",
-    "docpad-plugin-eco": "^2.1.0",
+    "joe": "1.6.0",
+	"assert-helpers": "^4.4.0",
+	"joe-reporter-console": "1.2.1",
     "projectz": "^0.5.0",
     "request": "~2.33.0"
   },

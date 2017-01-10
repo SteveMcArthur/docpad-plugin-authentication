@@ -1,9 +1,12 @@
 {
-  "name": "docpad-plugin-authentication-testsite",
-  "version": "0.0.1",
-  "private": true,
+  "name": "no-skeleton.docpad",
+  "version": "0.1.0",
+  "description": "New DocPad project without using a skeleton",
   "dependencies": {
-    "docpad": "~6.79.0",
-    "docpad-plugin-eco": "~2.1.0"
+    "docpad": "~6.79.0"
+  },
+  "main": "node_modules/.bin/docpad-server",
+  "scripts": {
+    "start": "node_modules/.bin/docpad-server"
   }
 }

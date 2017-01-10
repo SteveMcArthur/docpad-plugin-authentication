@@ -29,20 +29,14 @@ module.exports = (testers) ->
             @suite 'Check plugin does not clash with other plugins', (suite,test) ->
                 # Prepare
                 plugin = tester.docpad.getPlugin('authentication')
-                aaTestPlugin = tester.docpad.getPlugin('aatester')
-                analyticsPlugin = tester.docpad.getPlugin('analytics')
+                aardvarkPlugin = tester.docpad.getPlugin('aardvark')
                 baseUrl = "http://localhost:#{tester.docpad.config.port}"
                 loginTitleReg = /\<title\>Login Page\<\/title\>/
                 
-                test 'aatester is loaded', (done) ->
-                    expect(aaTestPlugin).to.be.an('object')
+                test 'aardvark is loaded', (done) ->
+                    expect(aardvarkPlugin).to.be.an('object')
                     done()
-                    
-                ###
-                test 'analytics is loaded', (done) ->
-                    expect(analyticsPlugin).to.be.an('object')
-                    done()
-                ###
+
                 
                 ###
                 test 'forceServerCreation should be true', (done) ->
@@ -51,13 +45,13 @@ module.exports = (testers) ->
                     done()
                 ###
                     
-                test 'call aatester route', (done) ->
-                    fileUrl = "#{baseUrl}/something"
+                test 'call aardvark route', (done) ->
+                    fileUrl = "#{baseUrl}/aardvark"
                     request fileUrl, (err,response,actual) ->
                         return done(err)  if err
                         actualStr = actual.toString()
                         console.log(actual)
-                        expectedStr = "Something..."
+                        expectedStr = "Ethel The Aardvark Goes Quantity Surveying"
                         expect(actualStr).to.equal(expectedStr)
                         done()
 

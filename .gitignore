@@ -1,5 +1,6 @@
 **/*.log
 **/.docpad.db
+credentials.json
 
 # Build Files
 build/
