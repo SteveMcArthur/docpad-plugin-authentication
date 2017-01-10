@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "New DocPad project without using a skeleton",
   "dependencies": {
-    "docpad": "~6.79.0"
+    "docpad": "~6.78.6"
   },
   "main": "node_modules/.bin/docpad-server",
   "scripts": {
