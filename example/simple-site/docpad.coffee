@@ -20,7 +20,7 @@ docpadConfig = {
             #it will return you to 127.0.0.1 and NOT localhost and your session will be lost and
             #you will get an internal error. Facebook, on the other hand will not accept 127.0.0.1
             #as a URL.
-            url: "http://127.0.0.1:9778" #this will be overriden in our dev environment
+            #url: "http://127.0.0.1:9778" #this will be overriden in our dev environment
 
 
             # Here are some old site urls that you would like to redirect from
@@ -242,6 +242,13 @@ docpadConfig = {
                     res.redirect(newUrl+req.url, 301)
                 else
                     next()
+                    
+            server.get '/isLoggedIn', (req,res,next) ->
+                if req.isAuthenticated()
+                    res.send('true')
+                else
+                    res.send('false')
+                
                     
 }
 

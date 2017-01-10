@@ -74,6 +74,13 @@ module.exports = (BasePlugin) ->
             getUsers: () ->
                 return []
             
+            ###
+            Enable this if you get the `passport.initialize() middleware not in use` error.
+            This is caused when another plugin is loaded before the authentication plugin and is
+            applying routes before the authentication routes can be applied. This config option
+            forces the plugin to manually create the HTTP server and apply the authentication
+            routes before any other plugin.
+            ###
             forceServerCreation: false
 
 

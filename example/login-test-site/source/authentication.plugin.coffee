@@ -74,14 +74,22 @@ module.exports = (BasePlugin) ->
             getUsers: () ->
                 return []
             
+            ###
+            Enable this if you get the `passport.initialize() middleware not in use` error.
+            This is caused when another plugin is loaded before the authentication plugin and is
+            applying routes before the authentication routes can be applied. This config option
+            forces the plugin to manually create the HTTP server and apply the authentication
+            routes before any other plugin.
+            ###
             forceServerCreation: false
 
 
         #class that contains and manages all the login strategys
         socialLoginClass = require("./social-login")
         
-        serverBeforeFn: () ->
+        createDocPadServer: () ->
             docpad = @
+            plugin = docpad.getPlugin('authentication')
             docpad.log("info","Authentication: creating servers")
             opts = {}
             http = require('http')
@@ -90,16 +98,14 @@ module.exports = (BasePlugin) ->
                 opts.serverExpress = express()
                 opts.serverHttp = http.createServer(opts.serverExpress)
                 docpad.setServer(opts)
-                docpad.log("info","Authentication: creating servers")
+                docpad.log("info","Authentication: servers created")
+                plugin.createSocialLoginClass(opts.serverExpress)
                 
         setConfig: ->
             super
-            
             plugin = @
-            console.log("setConfig...")
             if plugin.getConfig().forceServerCreation
-                console.log("assign server before..")
-                plugin.serverBefore = plugin.serverBeforeFn
+                plugin.docpadReady = plugin.createDocPadServer
 
 
         #check all strategies passed to config have values
@@ -187,20 +193,8 @@ module.exports = (BasePlugin) ->
                         console.log(err)
                         done(err)
             )
-                
-                
 
-        serverExtend: (opts) ->
-            # Extract the server from the options
-            {server} = opts
-            docpad = @docpad
-
-                
-            ensureAuthenticated = @config.ensureAuthenticated
-            
-            if !@socialLogin
-                @createSocialLoginClass(server)
-            
+            ensureAuthenticated = @getConfig().ensureAuthenticated
 
             socialConfig = @getValidStrategies()
             #prior to 2.0.7 docpad would fall over
@@ -217,6 +211,16 @@ module.exports = (BasePlugin) ->
             else
                 @docpad.log("warn",@name + ": no strategies configured. No pages protected by authentication")
                 
+                
+
+        serverExtend: (opts) ->
+            # Extract the server from the options
+            {server} = opts
+            docpad = @docpad
+            
+            if !@socialLogin
+                @createSocialLoginClass(server)
+              
             @setUpMembership(server)
             @
 

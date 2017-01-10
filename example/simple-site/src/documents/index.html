@@ -4,6 +4,7 @@
 <head>
     <title>Home</title>
     <link rel="stylesheet" href="/css/styles.css" />
+
 </head>
 
 <body>
@@ -19,13 +20,18 @@
             </li>
         </ul>
         <h1>Home</h1>
-        <h2>Welcome! Please log in.</h2>
-        <a class="button" href="/login.html">Login</a>
-        <div class="logout">
-            <a href="/logout">Logout</a>
+        <div id="loggedout" style="display:none;">
+            <h2>Welcome! Please log in.</h2>
+            <a class="button" href="/login.html">Login</a>
+            <div class="logout">
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+        <div id="loggedin" style="display:none;">
+            <h2>Welcome! You are logged in</h2>
         </div>
     </div>
-
+<script src="/js/script.js"></script>
 </body>
 
 </html>

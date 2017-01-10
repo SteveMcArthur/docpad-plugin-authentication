@@ -37,6 +37,23 @@ Example configurations for facebook, twitter, google and gihub in the [docpad co
         authentication:
             #list of urls that will be protected by authentication 
             protectedUrls: ['/admin/*','/analytics/*','/super-secret-url/*']
+            
+            ###
+            Enable this if you get the `passport.initialize() middleware not in use` error.
+            This is caused when another plugin is loaded before the authentication plugin and is
+            applying routes before the authentication routes can be applied. This config option
+            forces the plugin to manually create the HTTP server and apply the authentication
+            routes before any other plugin.
+            ###
+            forceServerCreation: false
+            
+            ###
+            If you want your app to be able to retrieve a list of users from the membership list
+            then you will need to supply a method to this config option - unless you just rely
+            on the default simple membership which populates this method automatically.
+            ###
+            getUsers: () ->
+                #do something to get a list of users
                 
             ###
             configuration parameters for the various authentication
