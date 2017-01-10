@@ -55,7 +55,8 @@
   },
   "devDependencies": {
     "chai": "~1.9.0",
-    "coffee-script": "^1.9.1",
+    "cake": "^0.1.1",
+    "coffee-script": "^1.9.2",
     "docpad": ">=6.3 <7",
     "joe": "1.6.0",
 	"assert-helpers": "^4.4.0",
