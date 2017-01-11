@@ -12,4 +12,4 @@ out/
 *.bat
 .env
 **/.env
-example/login-test-site/.env
+!/out

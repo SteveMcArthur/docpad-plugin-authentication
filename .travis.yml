@@ -6,7 +6,8 @@ language: node_js
 # ensure test dependencies are installed (handled via cake install)
 install: "npm install -g npm && npm install coffee-script && npm install && ./node_modules/.bin/cake install"
 # ensure our application is compiled before we run our tests
-before_script: "./node_modules/.bin/cake compile"
+# before_script: "./node_modules/.bin/cake compile"
+# before_script: "node COFFEE -co ./out ./src"
 script: "npm test"
 node_js:
   - "0.12"
