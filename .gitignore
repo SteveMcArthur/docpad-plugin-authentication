@@ -13,3 +13,4 @@ out/
 .env
 **/.env
 !/out
+!/test/plugins/docpad-plugin-aardvark/out
