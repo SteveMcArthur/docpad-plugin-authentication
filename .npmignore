@@ -30,6 +30,7 @@ example/
 template.js
 component.json
 bower.json
+credentials.json
 
 # =====================================
 # CUSTOM MODIFICATIONS
