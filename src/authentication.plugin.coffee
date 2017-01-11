@@ -89,6 +89,7 @@ module.exports = (BasePlugin) ->
         
         createDocPadServer: () ->
             docpad = @
+            cfg = docpad.getConfig()
             plugin = docpad.getPlugin('authentication')
             docpad.log("info","Authentication: creating servers")
             opts = {}
@@ -97,6 +98,13 @@ module.exports = (BasePlugin) ->
             if !docpad.serverExpress
                 opts.serverExpress = express()
                 opts.serverHttp = http.createServer(opts.serverExpress)
+                # This mirrors the DocPad code in the `server` method (around line 6370)
+                # We have to repeat it here because these express methods MUST be applied
+                # before any routes are applied
+                if cfg.middlewareBodyParser isnt false
+                    opts.serverExpress.use(express.urlencoded())
+                    opts.serverExpress.use(express.json())
+
                 docpad.setServer(opts)
                 docpad.log("info","Authentication: servers created")
                 plugin.createSocialLoginClass(opts.serverExpress)

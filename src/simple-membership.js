@@ -83,13 +83,19 @@ function makeAdmin(id, service) {
 }
 
 function serverCreateAccount(req, res, next) {
-    var name = req.body.NickName;
-    if (name && req.user && req.user.isNew) {
-        req.user.name = name;
-        saveNewUser(req.user);
-        res.redirect(afterAuthenticateURL);
-    } else {
-        next();
+    try {
+        var name = req.body.NickName;
+        if (name && req.user && req.user.isNew) {
+            req.user.name = name;
+            saveNewUser(req.user);
+            res.redirect(afterAuthenticateURL);
+        } else {
+            next();
+        }
+    } catch(err) {
+        console.log("Error in serverCreateAccount");
+        console.log(err);
+        res.status(500).send('Cannot create account');
     }
 }
 
@@ -114,7 +120,8 @@ function init(userList, server, dataPath) {
     dataPath = dataPath || process.cwd();
     loadMembershipFile(dataPath);
 
-
+    //make sure these are not duplicated in the docpad.coffee
+    //file otherwise you will get a totally inexplicable http 500 error
     server.post(createAccountURL, serverCreateAccount);
     server.get(afterAuthenticateURL, serverSignUpNewUser);
 }

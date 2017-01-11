@@ -3,7 +3,7 @@
 fs = require('fs')
 path = require('path')
 util = require('util')
-docpadConfig = {
+docpadConfig =
 
     # =================================
     # Template Data
@@ -247,6 +247,8 @@ docpadConfig = {
             latestConfig = docpad.getConfig()
             oldUrls = latestConfig.templateData.site.oldUrls or []
             newUrl = latestConfig.templateData.site.url
+            auth = docpad.getPlugin('authentication')
+            console.log("Got plugin: "+auth.name)
 
             # Redirect any requests accessing one of our sites oldUrls to the new site url
             server.use (req,res,next) ->
@@ -257,13 +259,16 @@ docpadConfig = {
                     next()
             #url to make a user admin
             server.get /\/makeAdmin/, (req,res,next) ->
-                user = req.user
-                user = latestConfig.makeAdmin(user.service_id,user.service)
-                req.login user, (err) ->
-                    if err
-                        next(err)
-                    res.redirect('/admin')
-                    
+                try
+                    user = req.user
+                    user = auth.makeAdmin(user.service_id,user.service)
+                    req.login user, (err) ->
+                        if err
+                            next(err)
+                        res.redirect('/admin')
+                catch err
+                    docpad.log("warn",err)
+                    throw err
                     
             server.get '/' , (req,res,next) ->
                 if req.user and req.user.isNew
@@ -271,16 +276,6 @@ docpadConfig = {
                 else
                     next()
                     
-            server.post '/createAccount' , (req,res,next) ->
-                name = req.body.NickName
-                if name and req.user and req.user.isNew
-                    req.user.name = name
-                    latestConfig.saveNewUser(req.user)
-                    res.redirect('/')
-                else
-                    next()
-           
-}
 
 # Export our DocPad Configuration
 module.exports = docpadConfig
